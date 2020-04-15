@@ -11,6 +11,7 @@ import authApi from "../../api/auth_api";
 import {cleanAuthorizationHeader, setAuthorizationHeader} from "../../api/api";
 import {getItemOrEmpty, getItemOrThrow, removeItem, setItem} from "../../utils/local_storage";
 import {debug, debugError} from "../../utils/logging";
+import {SESSION_TEAM} from "../constants/team_constants";
 
 const state = {
   token: getItemOrEmpty(USER_TOKEN_NAME),
@@ -47,7 +48,7 @@ const actions = {
     cleanAuthorizationHeader();
     commit(AUTH_LOGOUT);
   },
-  async [AUTH_REFRESH]({commit}) {
+  async [AUTH_REFRESH]({commit, dispatch}) {
     try {
       const token = getItemOrThrow(USER_TOKEN_NAME);
       setAuthorizationHeader("Bearer " + token);
@@ -64,6 +65,7 @@ const actions = {
         })
         .then((userInfoResponse) => commit(AUTH_REFRESH, userInfoResponse))
         .then(() => commit(AUTH_SUCCESS, token))
+        .then(() => dispatch(SESSION_TEAM))
     } catch (e) {
       commit(AUTH_ERROR);
       cleanAuthorizationHeader();
