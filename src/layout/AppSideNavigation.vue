@@ -13,12 +13,12 @@
             left
             color="primary"
           >
-            <span class="white--text headline">T</span>
+            <span class="white--text headline">{{username.charAt(0).toUpperCase()}}</span>
           </v-avatar>
         </v-list-item-avatar>
 
         <v-list-item-content>
-          <v-list-item-title class="title">avatarName</v-list-item-title>
+          <v-list-item-title class="title">{{username}}</v-list-item-title>
         </v-list-item-content>
 
       </v-list-item>
@@ -63,7 +63,15 @@
     name: "AppSideNavigation",
     computed: {
       navigationItems() {
-        return []
+        return [
+          {title: "Teams", icon: "mdi-account-multiple", link: "/teams", available: this.isTeamsAvailable},
+        ].filter(it => it.available)
+      },
+      username() {
+        return this.$store.getters.username;
+      },
+      isTeamsAvailable() {
+        return this.$store.getters.isAdmin;
       }
     },
     methods: {

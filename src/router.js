@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Home from './view/Home.vue'
 import Login from "./components/auth/Login.vue";
 import store from "./data/store.js";
+import Team from "./components/team/Team";
 
 Vue.use(Router);
 
@@ -34,6 +35,12 @@ export default new Router({
       path: '/',
       name: 'home',
       component: Home,
+      beforeEnter: ifAuthenticated
+    },
+    {
+      path: '/teams',
+      name: 'teams',
+      component: Team,
       beforeEnter: ifAuthenticated
     }
   ]
