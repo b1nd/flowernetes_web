@@ -13,6 +13,21 @@
         <v-row no-gutters>
           <v-col cols="12" sm="12">
             <v-text-field
+              v-model="username"
+              label="Username*"
+              flat
+            />
+          </v-col>
+          <v-col cols="12" sm="12">
+            <v-text-field
+              type="password"
+              v-model="password"
+              label="Password*"
+              flat
+            />
+          </v-col>
+          <v-col cols="12" sm="12">
+            <v-text-field
               v-model="name"
               label="Name*"
               flat
@@ -59,6 +74,7 @@
   import {TeamDto} from "../../data/dto/team_dto";
   import {areAllRequiredFieldsSpecified} from "../../utils/validation";
   import {ADD_TEAM} from "../../data/constants/team_constants";
+  import {Credentials} from "../../data/dto/auth_dto";
 
   export default {
     name: "AddTeamButton",
@@ -68,13 +84,15 @@
         namespaces: [],
 
         name: "",
-        namespace: ""
+        namespace: "",
+        username: "",
+        password: ""
       }
     },
     computed: {
       areRequiredFieldsSpecified() {
         return areAllRequiredFieldsSpecified([
-          this.name, this.namespace
+          this.name, this.namespace, this.username, this.password
         ]);
       }
     },
@@ -89,7 +107,11 @@
       save() {
         teamApi.addTeam(new TeamDto(
           this.name,
-          this.namespace
+          this.namespace,
+          new Credentials(
+            this.username,
+            this.password
+          )
         )).then(response => {
           const teamInfoDto = response.data;
           debug(ADD_TEAM, "teamInfoDto:", teamInfoDto);
@@ -104,6 +126,8 @@
       refreshForm: function () {
         this.name = "";
         this.namespace = "";
+        this.username = "";
+        this.password = "";
       }
     },
     beforeMount() {

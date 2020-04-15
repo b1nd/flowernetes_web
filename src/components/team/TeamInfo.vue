@@ -69,7 +69,7 @@
   import ListInfoItems from "../common/ListInfoItems";
   import {areAllRequiredFieldsSpecified} from "../../utils/validation";
   import teamApi from "../../api/teamApi";
-  import {TeamDto} from "../../data/dto/team_dto";
+  import {UpdateTeamDto} from "../../data/dto/team_dto";
   import {DELETE_TEAM, UPDATE_TEAM} from "../../data/constants/team_constants";
 
   export default {
@@ -120,7 +120,7 @@
         })
       },
       save() {
-        teamApi.updateTeam(this.team.id, new TeamDto(
+        teamApi.updateTeam(this.team.id, new UpdateTeamDto(
           this.name,
           this.namespace
         )).then(response => {
