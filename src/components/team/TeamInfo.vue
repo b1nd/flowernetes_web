@@ -65,12 +65,10 @@
 <script>
   import namespaceApi from "../../api/namespaceApi";
   import {debug} from "../../utils/logging";
-  import {GET_NAMESPACES} from "../../data/constants/namespace_constants";
   import ListInfoItems from "../common/ListInfoItems";
   import {areAllRequiredFieldsSpecified} from "../../utils/validation";
   import teamApi from "../../api/teamApi";
   import {UpdateTeamDto} from "../../data/dto/team_dto";
-  import {DELETE_TEAM, UPDATE_TEAM} from "../../data/constants/team_constants";
 
   export default {
     name: "TeamInfo",
@@ -115,7 +113,7 @@
       getNamespaces() {
         namespaceApi.getNamespaces().then(response => {
           const namespaceNamesDto = response.data;
-          debug(GET_NAMESPACES, "namespaceNamesDto:", namespaceNamesDto);
+          debug("getNamespaces", "namespaceNamesDto:", namespaceNamesDto);
           this.namespaces = namespaceNamesDto.items;
         })
       },
@@ -125,7 +123,7 @@
           this.namespace
         )).then(response => {
           const teamInfoDto = response.data;
-          debug(UPDATE_TEAM, "teamInfoDto:", teamInfoDto);
+          debug("updateTeam", "teamInfoDto:", teamInfoDto);
           this.team = teamInfoDto;
           this.isEditActive = false;
           this.$emit("input", this.team);
@@ -137,7 +135,7 @@
       },
       deleteTeam() {
         teamApi.deleteTeam(this.team.id).then(() => {
-          debug(DELETE_TEAM, "Successfully delete team:", this.team);
+          debug("deleteTeam", "Successfully delete team:", this.team);
           this.$emit("change", this.team);
         })
       },

@@ -21,6 +21,7 @@
           <v-col cols="12" sm="12">
             <v-text-field
               type="password"
+              autocomplete="on"
               v-model="password"
               label="Password*"
               flat
@@ -69,11 +70,9 @@
 <script>
   import namespaceApi from "../../api/namespaceApi";
   import {debug} from "../../utils/logging";
-  import {GET_NAMESPACES} from "../../data/constants/namespace_constants";
   import teamApi from "../../api/teamApi";
   import {TeamDto} from "../../data/dto/team_dto";
   import {areAllRequiredFieldsSpecified} from "../../utils/validation";
-  import {ADD_TEAM} from "../../data/constants/team_constants";
   import {Credentials} from "../../data/dto/auth_dto";
 
   export default {
@@ -100,7 +99,7 @@
       getNamespaces() {
         namespaceApi.getNamespaces().then(response => {
           const namespaceNamesDto = response.data;
-          debug(GET_NAMESPACES, "namespaceNamesDto:", namespaceNamesDto);
+          debug("getNamespaces", "namespaceNamesDto:", namespaceNamesDto);
           this.namespaces = namespaceNamesDto.items;
         })
       },
@@ -114,7 +113,7 @@
           )
         )).then(response => {
           const teamInfoDto = response.data;
-          debug(ADD_TEAM, "teamInfoDto:", teamInfoDto);
+          debug("addTeam", "teamInfoDto:", teamInfoDto);
           this.$emit("change", teamInfoDto);
           this.close();
         })

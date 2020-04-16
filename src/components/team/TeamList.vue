@@ -20,7 +20,7 @@
               @change="deleteTeam"
               editable
               v-for="team in teams"
-              v-bind:key="team.id"
+              :key="team.id"
               :team="team"
             />
           </v-list>
@@ -36,7 +36,6 @@
 
 <script>
   import teamApi from "../../api/teamApi";
-  import {GET_TEAMS} from "../../data/constants/team_constants";
   import {debug} from "../../utils/logging";
   import AddTeamButton from "./AddTeamButton";
   import TeamItem from "./TeamItem";
@@ -53,7 +52,7 @@
       getTeams() {
         teamApi.getTeams().then(response => {
           const allTeamsInfoDto = response.data;
-          debug(GET_TEAMS, "allTeamsInfoDto:", allTeamsInfoDto);
+          debug("getTeams", "allTeamsInfoDto:", allTeamsInfoDto);
           this.teams = allTeamsInfoDto.items;
         })
       },

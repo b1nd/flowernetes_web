@@ -4,6 +4,7 @@ import Home from './view/Home.vue'
 import Login from "./components/auth/Login.vue";
 import store from "./data/store.js";
 import Team from "./components/team/Team";
+import Workflow from "./components/workflow/Workflow";
 
 Vue.use(Router);
 
@@ -32,15 +33,21 @@ export default new Router({
       beforeEnter: ifNotAuthenticated
     },
     {
-      path: '/',
-      name: 'home',
+      path: "/",
+      name: "home",
       component: Home,
       beforeEnter: ifAuthenticated
     },
     {
-      path: '/teams',
-      name: 'teams',
+      path: "/teams",
+      name: "teams",
       component: Team,
+      beforeEnter: ifAuthenticated
+    },
+    {
+      path: "/workflows",
+      name: "workflows",
+      component: Workflow,
       beforeEnter: ifAuthenticated
     }
   ]

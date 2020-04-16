@@ -30,7 +30,9 @@
   export default {
     name: "AppBar",
     data: () => ({
-      toolbarItems: []
+      toolbarItems: [
+        {title: 'Workflows', link: '/workflows'}
+      ]
     })
   }
 </script>
