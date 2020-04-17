@@ -22,10 +22,9 @@
                 v-for="workflow in workflows"
                 :key="workflow.id"
               >
-                <v-list-item :value="workflow">
-                  <v-list-item-title v-text="workflow.name"/>
-                </v-list-item>
-                <v-divider/>
+                <WorkflowItem
+                  :workflow="workflow"
+                />
               </div>
             </v-list-item-group>
           </v-list>
@@ -43,14 +42,15 @@
   import AddWorkflowButton from "./AddWorkflowButton";
   import workflowApi from "../../api/workflowApi";
   import {debug} from "../../utils/logging";
+  import WorkflowItem from "./WorkflowItem";
 
   export default {
     name: "WorkflowList",
-    components: {AddWorkflowButton},
+    components: {WorkflowItem, AddWorkflowButton},
     data() {
       return {
         workflows: [],
-        selectedWorkflow: ""
+        selectedWorkflow: undefined
       }
     },
     computed: {

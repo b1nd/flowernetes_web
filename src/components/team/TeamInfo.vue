@@ -81,7 +81,7 @@
       value: {
         type: Object,
         required: true
-      },
+      }
     },
     data() {
       return {

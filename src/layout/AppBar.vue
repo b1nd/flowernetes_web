@@ -31,7 +31,8 @@
     name: "AppBar",
     data: () => ({
       toolbarItems: [
-        {title: 'Workflows', link: '/workflows'}
+        {title: 'Workflows', link: '/workflows'},
+        {title: 'Scripts', link: '/scripts'}
       ]
     })
   }

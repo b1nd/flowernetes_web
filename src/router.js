@@ -5,6 +5,7 @@ import Login from "./components/auth/Login.vue";
 import store from "./data/store.js";
 import Team from "./components/team/Team";
 import Workflow from "./components/workflow/Workflow";
+import Script from "./components/script/Script";
 
 Vue.use(Router);
 
@@ -48,6 +49,12 @@ export default new Router({
       path: "/workflows",
       name: "workflows",
       component: Workflow,
+      beforeEnter: ifAuthenticated
+    },
+    {
+      path: "/scripts",
+      name: "scripts",
+      component: Script,
       beforeEnter: ifAuthenticated
     }
   ]
