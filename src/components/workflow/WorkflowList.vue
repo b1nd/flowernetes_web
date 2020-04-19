@@ -1,6 +1,8 @@
 <template>
   <v-card
+    outlined
     tile
+    :elevation="1"
   >
     <v-card-title>
       Workflows

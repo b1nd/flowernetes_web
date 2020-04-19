@@ -1,7 +1,7 @@
 <template>
-  <v-card tile>
+  <v-card tile outlined>
     <v-card-title>
-      Team
+      Script info
       <v-spacer/>
       <v-btn
         :disabled="downloadActive"
@@ -121,9 +121,9 @@
       },
       cancel() {
         this.isEditActive = false;
-        this.refreshTeam();
+        this.refreshScript();
       },
-      refreshTeam() {
+      refreshScript() {
       }
     }
   }

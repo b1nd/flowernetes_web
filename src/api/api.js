@@ -2,7 +2,7 @@ import axios from 'axios'
 import store from "../data/store.js";
 import {apiUrl} from "../data/constants/env_constants"
 import {AUTH_LOGOUT} from "../data/constants/auth_constants";
-import {debug} from "../utils/logging";
+import {debug, debugError} from "../utils/logging";
 
 const api = axios.create({
   baseURL: apiUrl
@@ -15,6 +15,7 @@ api.interceptors.response.use(response => response, async function (error) {
           debug("Token is bad or expired!");
         });
   }
+  debugError(error.response.data);
   return Promise.reject(error);
 });
 

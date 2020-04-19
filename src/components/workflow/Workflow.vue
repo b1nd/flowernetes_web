@@ -15,7 +15,7 @@
 
 <script>
   import WorkflowList from "./WorkflowList";
-  import TaskList from "./TaskList";
+  import TaskList from "../task/TaskList";
 
   export default {
     name: "Workflow",
