@@ -38,6 +38,34 @@
             />
           </v-col>
           <v-col cols="12" sm="12">
+            <v-text-field
+              v-model="cpuRequest"
+              label="CPU request*"
+              flat
+            />
+          </v-col>
+          <v-col cols="12" sm="12">
+            <v-text-field
+              v-model="cpuLimit"
+              label="CPU limit*"
+              flat
+            />
+          </v-col>
+          <v-col cols="12" sm="12">
+            <v-text-field
+              v-model="memoryRequest"
+              label="Memory request*"
+              flat
+            />
+          </v-col>
+          <v-col cols="12" sm="12">
+            <v-text-field
+              v-model="memoryLimit"
+              label="Memory limit*"
+              flat
+            />
+          </v-col>
+          <v-col cols="12" sm="12">
             <v-textarea
               v-model="condition"
               label="Condition*"
@@ -93,13 +121,18 @@
         name: "",
         condition: "",
         baseImage: "",
+        cpuRequest: "",
+        memoryRequest: "",
+        cpuLimit: "",
+        memoryLimit: "",
         scriptId: ""
       }
     },
     computed: {
       areRequiredFieldsSpecified() {
         return areAllRequiredFieldsSpecified([
-          this.name, this.condition, this.baseImage, this.scriptId
+          this.name, this.condition, this.baseImage, this.cpuRequest, this.memoryRequest, this.cpuLimit,
+          this.memoryLimit, this.scriptId
         ]);
       }
     },
@@ -130,6 +163,10 @@
           this.workflow,
           JSON.parse(this.condition),
           this.baseImage,
+          this.memoryRequest,
+          this.memoryLimit,
+          this.cpuRequest,
+          this.cpuLimit,
           this.scriptId
         )).then(response => {
           const task = response.data;
@@ -146,6 +183,10 @@
         this.name = "";
         this.condition = "";
         this.baseImage = "";
+        this.memoryRequest = "";
+        this.memoryLimit = "";
+        this.cpuRequest = "";
+        this.cpuLimit = "";
         this.scriptId = "";
       }
     },

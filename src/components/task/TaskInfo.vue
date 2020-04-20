@@ -103,6 +103,10 @@
         return [
           {icon: "", key: "Name", value: this.task.name},
           {icon: "", key: "Base Image", value: this.task.baseImage},
+          {icon: "", key: "CPU request", value: `${this.task.cpuRequest} cores`},
+          {icon: "", key: "CPU limit", value: `${this.task.cpuLimit} cores`},
+          {icon: "", key: "Memory request", value: `${this.task.memoryRequest} bytes`},
+          {icon: "", key: "Memory limit", value: `${this.task.memoryLimit} bytes`},
           {icon: "", key: "Condition", value: this.task.conditionJson}
         ]
       },
