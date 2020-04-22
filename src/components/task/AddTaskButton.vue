@@ -72,6 +72,13 @@
               flat
             />
           </v-col>
+          <v-col cols="12" sm="12">
+            <v-checkbox
+              v-model="scheduled"
+              label="Schedule"
+              flat
+            />
+          </v-col>
         </v-row>
       </v-card-text>
       <v-card-actions>
@@ -120,6 +127,7 @@
 
         name: "",
         condition: "",
+        scheduled: false,
         baseImage: "",
         cpuRequest: "",
         memoryRequest: "",
@@ -162,6 +170,7 @@
           this.name,
           this.workflow,
           JSON.parse(this.condition),
+          this.schedule,
           this.baseImage,
           this.memoryRequest,
           this.memoryLimit,
@@ -182,6 +191,7 @@
       refreshForm: function () {
         this.name = "";
         this.condition = "";
+        this.scheduled = false;
         this.baseImage = "";
         this.memoryRequest = "";
         this.memoryLimit = "";

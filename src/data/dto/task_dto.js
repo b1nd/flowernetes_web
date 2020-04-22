@@ -3,6 +3,7 @@ export class TaskDto {
     name,
     workflow,
     condition,
+    schedule,
     baseImage,
     memoryRequest,
     memoryLimit,
@@ -13,6 +14,7 @@ export class TaskDto {
     this.name = name;
     this.workflow = workflow;
     this.condition = condition;
+    this.schedule = schedule;
     this.baseImage = baseImage;
     this.memoryRequest = memoryRequest;
     this.memoryLimit = memoryLimit;

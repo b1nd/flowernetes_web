@@ -4,5 +4,6 @@ const tasksMapping = "/tasks";
 
 export default {
   addTask: taskDto => api.put(tasksMapping, taskDto),
-  deleteTask: taskId => api.delete(`${tasksMapping}/${taskId}`)
+  deleteTask: taskId => api.delete(`${tasksMapping}/${taskId}`),
+  runTask: taskId => api.post(`${tasksMapping}/${taskId}/run`)
 }
