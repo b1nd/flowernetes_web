@@ -23,3 +23,11 @@ export class TaskDto {
     this.sourceScriptId = sourceScriptId;
   }
 }
+
+export const TaskStatus = {
+  WAITING: "WAITING",
+  PENDING: "PENDING",
+  RUNNING: "RUNNING",
+  SUCCESS: "SUCCESS",
+  ERROR: "ERROR"
+};

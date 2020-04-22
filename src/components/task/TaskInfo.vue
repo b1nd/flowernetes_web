@@ -1,7 +1,7 @@
 <template>
-  <v-card tile>
+  <v-card tile outlined>
     <v-card-title>
-      Task
+      Task info
       <v-spacer/>
       <v-btn
         v-if="editable && !isEditActive"
@@ -29,10 +29,10 @@
           />
         </v-col>
         <v-col cols="12" sm="12">
-          <v-expansion-panels accordion tile hover>
+          <v-expansion-panels accordion tile flat hover>
             <v-expansion-panel>
               <v-expansion-panel-header>
-                Script
+                Script: {{scriptHeader}}
               </v-expansion-panel-header>
               <v-expansion-panel-content
                 v-if="script"
@@ -99,6 +99,9 @@
       }
     },
     computed: {
+      scriptHeader() {
+        return this.script ? `${this.script.name}:${this.script.tag}` : "";
+      },
       infoItems() {
         return [
           {icon: "", key: "Name", value: this.task.name},

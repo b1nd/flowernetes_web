@@ -11,7 +11,12 @@
             </v-list-item-content>
           </v-list-item>
         </v-col>
-        <v-col cols="12" sm="1" class="text-right">
+        <v-col
+          v-if="isRunTaskAvailable"
+          cols="12"
+          sm="1"
+          class="text-right"
+        >
           <v-btn
             icon
             @click="runTask"
@@ -54,6 +59,11 @@
       return {
         dialog: false,
         editableTask: this.task
+      }
+    },
+    computed: {
+      isRunTaskAvailable() {
+        return this.$store.getters.isAdmin || this.$store.getters.sessionTeam.id === this.task.workflow.team.id;
       }
     },
     methods: {

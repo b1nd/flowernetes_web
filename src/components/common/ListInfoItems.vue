@@ -5,7 +5,10 @@
       :key="i"
       dense
     >
-      <InfoItem :item="item"/>
+      <InfoItem
+        :cols="cols"
+        :item="item"
+      />
     </v-list-item>
   </v-list>
 </template>
@@ -17,6 +20,10 @@
     name: "ListInfoItems",
     components: {InfoItem},
     props: {
+      cols: {
+        type: Number,
+        default: 2
+      },
       items: {
         type: Array,
         required: true

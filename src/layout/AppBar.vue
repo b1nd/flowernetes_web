@@ -32,6 +32,7 @@
     data: () => ({
       toolbarItems: [
         {title: 'Workflows', link: '/workflows'},
+        {title: 'Workloads', link: '/workloads'},
         {title: 'Scripts', link: '/scripts'}
       ]
     })
