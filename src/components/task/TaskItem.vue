@@ -23,6 +23,20 @@
           >
             <v-icon color="success">mdi-play</v-icon>
           </v-btn>
+          <v-btn
+            v-if="!editableTask.scheduled"
+            icon
+            @click="scheduleTask"
+          >
+            <v-icon color="warning">mdi-alarm-check</v-icon>
+          </v-btn>
+          <v-btn
+            v-else
+            icon
+            @click="removeTaskFromSchedule"
+          >
+            <v-icon color="error">mdi-alarm-off</v-icon>
+          </v-btn>
         </v-col>
         <v-col cols="12" sm="12">
           <v-divider/>
@@ -75,6 +89,20 @@
         taskApi.runTask(this.editableTask.id)
           .then(() => {
             debug("runTask", "Task has run", this.task)
+          })
+      },
+      scheduleTask() {
+        taskApi.scheduleTask(this.editableTask.id)
+          .then(() => {
+            debug("scheduleTask", "Task scheduled");
+            this.editableTask.scheduled = true;
+          })
+      },
+      removeTaskFromSchedule() {
+        taskApi.unscheduleTask(this.editableTask.id)
+          .then(() => {
+            debug("unscheduleTask", "Task removed from schedule");
+            this.editableTask.scheduled = false;
           })
       }
     }

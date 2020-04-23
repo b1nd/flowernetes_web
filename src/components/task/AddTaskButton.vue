@@ -170,7 +170,7 @@
           this.name,
           this.workflow,
           JSON.parse(this.condition),
-          this.schedule,
+          this.scheduled,
           this.baseImage,
           this.memoryRequest,
           this.memoryLimit,
