@@ -67,8 +67,8 @@
           </v-col>
           <v-col cols="12" sm="12">
             <v-textarea
-              v-model="condition"
-              label="Condition*"
+              v-model="conditions"
+              label="Conditions*"
               flat
             />
           </v-col>
@@ -126,7 +126,7 @@
         baseImages: [],
 
         name: "",
-        condition: "",
+        conditions: "",
         scheduled: false,
         baseImage: "",
         cpuRequest: "",
@@ -139,7 +139,7 @@
     computed: {
       areRequiredFieldsSpecified() {
         return areAllRequiredFieldsSpecified([
-          this.name, this.condition, this.baseImage, this.cpuRequest, this.memoryRequest, this.cpuLimit,
+          this.name, this.conditions, this.baseImage, this.cpuRequest, this.memoryRequest, this.cpuLimit,
           this.memoryLimit, this.scriptId
         ]);
       }
@@ -169,7 +169,7 @@
         taskApi.addTask(new TaskDto(
           this.name,
           this.workflow,
-          JSON.parse(this.condition),
+          JSON.parse(this.conditions),
           this.scheduled,
           this.baseImage,
           this.memoryRequest,
@@ -190,7 +190,7 @@
       },
       refreshForm: function () {
         this.name = "";
-        this.condition = "";
+        this.conditions = "";
         this.scheduled = false;
         this.baseImage = "";
         this.memoryRequest = "";

@@ -25,6 +25,7 @@
       >
         <v-col cols="12" sm="12">
           <ListInfoItems
+            :cols="3"
             :items="infoItems"
           />
         </v-col>
@@ -110,7 +111,7 @@
           {icon: "", key: "CPU limit", value: `${this.task.cpuLimit} cores`},
           {icon: "", key: "Memory request", value: `${this.task.memoryRequest} bytes`},
           {icon: "", key: "Memory limit", value: `${this.task.memoryLimit} bytes`},
-          {icon: "", key: "Condition", value: this.task.conditionJson}
+          {icon: "", key: "Condition", value: this.task.conditionsJson}
         ]
       },
       areRequiredFieldsSpecified() {

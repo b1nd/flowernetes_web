@@ -2,7 +2,7 @@ export class TaskDto {
   constructor(
     name,
     workflow,
-    condition,
+    conditions,
     scheduled,
     baseImage,
     memoryRequest,
@@ -13,7 +13,7 @@ export class TaskDto {
   ) {
     this.name = name;
     this.workflow = workflow;
-    this.condition = condition;
+    this.conditions = conditions;
     this.scheduled = scheduled;
     this.baseImage = baseImage;
     this.memoryRequest = memoryRequest;
