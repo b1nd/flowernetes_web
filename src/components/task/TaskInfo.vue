@@ -105,13 +105,15 @@
       },
       infoItems() {
         return [
-          {icon: "", key: "Name", value: this.task.name},
-          {icon: "", key: "Base Image", value: this.task.baseImage},
-          {icon: "", key: "CPU request", value: `${this.task.cpuRequest} cores`},
-          {icon: "", key: "CPU limit", value: `${this.task.cpuLimit} cores`},
-          {icon: "", key: "Memory request", value: `${this.task.memoryRequest} bytes`},
-          {icon: "", key: "Memory limit", value: `${this.task.memoryLimit} bytes`},
-          {icon: "", key: "Condition", value: this.task.conditionsJson}
+          {key: "Name", value: this.task.name},
+          {key: "Base Image", value: this.task.baseImage},
+          {key: "CPU request", value: `${this.task.cpuRequest} cores`},
+          {key: "CPU limit", value: `${this.task.cpuLimit} cores`},
+          {key: "Memory request", value: `${this.task.memoryRequest} bytes`},
+          {key: "Memory limit", value: `${this.task.memoryLimit} bytes`},
+          {key: "Save log", value: this.task.saveLog},
+          {key: "Save script", value: this.task.saveScript},
+          {key: "Condition", value: this.task.conditionsJson}
         ]
       },
       areRequiredFieldsSpecified() {

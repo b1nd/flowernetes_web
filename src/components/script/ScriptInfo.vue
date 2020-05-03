@@ -92,11 +92,11 @@
     computed: {
       infoItems() {
         return [
-          {icon: "", key: "Name", value: this.script.name},
-          {icon: "", key: "Tag", value: this.script.tag},
-          {icon: "", key: "File name", value: this.script.filename},
-          {icon: "", key: "Run file path", value: this.script.runFilePath},
-          {icon: "", key: "Upload date", value: this.script.uploadDate}
+          {key: "Name", value: this.script.name},
+          {key: "Tag", value: this.script.tag},
+          {key: "File name", value: this.script.filename},
+          {key: "Run file path", value: this.script.runFilePath},
+          {key: "Upload date", value: this.script.uploadDate}
         ]
       },
       areRequiredFieldsSpecified() {

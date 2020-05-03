@@ -11,9 +11,9 @@ const api = axios.create({
 api.interceptors.response.use(response => response, async function (error) {
   if (error.response.status === 401) {
     await store.dispatch(AUTH_LOGOUT)
-        .then(() => {
-          debug("Token is bad or expired!");
-        });
+      .then(() => {
+        debug("Token is bad or expired!");
+      });
   }
   debugError(error.response.data);
   return Promise.reject(error);
@@ -25,6 +25,18 @@ export function cleanAuthorizationHeader() {
 
 export function setAuthorizationHeader(header) {
   api.defaults.headers.common['Authorization'] = header;
+}
+
+export function getFileNameFromHeader(response) {
+  const disposition = response.headers["content-disposition"];
+  if (disposition && disposition.indexOf('attachment') !== -1) {
+    const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+    const matches = filenameRegex.exec(disposition);
+    if (matches != null && matches[1]) {
+      return matches[1].replace(/['"]/g, '');
+    }
+  }
+  throw Error(`Cannot get file name from Content-Disposition header: ${disposition}`)
 }
 
 export default api;

@@ -11,7 +11,7 @@
         <v-spacer/>
       </v-card-title>
       <v-card-text>
-        <v-row no-gutters>
+        <v-row dense>
           <v-col cols="12" sm="12">
             <v-text-field
               v-model="name"
@@ -37,31 +37,47 @@
               label="Base image*"
             />
           </v-col>
-          <v-col cols="12" sm="12">
+          <v-col cols="12" sm="6">
             <v-text-field
               v-model="cpuRequest"
               label="CPU request*"
               flat
             />
           </v-col>
-          <v-col cols="12" sm="12">
+          <v-col cols="12" sm="6">
             <v-text-field
               v-model="cpuLimit"
               label="CPU limit*"
               flat
             />
           </v-col>
-          <v-col cols="12" sm="12">
+          <v-col cols="12" sm="6">
             <v-text-field
               v-model="memoryRequest"
               label="Memory request*"
               flat
             />
           </v-col>
-          <v-col cols="12" sm="12">
+          <v-col cols="12" sm="6">
             <v-text-field
               v-model="memoryLimit"
               label="Memory limit*"
+              flat
+            />
+          </v-col>
+          <v-col cols="12" sm="6">
+            <v-checkbox
+              v-model="saveLog"
+              label="Save log"
+              flat
+            />
+          </v-col>
+          <v-col cols="12" sm="6"
+            v-if="isSaveScriptAvailable"
+          >
+            <v-checkbox
+              v-model="saveScript"
+              label="Save output script"
               flat
             />
           </v-col>
@@ -108,7 +124,7 @@
   import scriptApi from "../../api/scriptApi";
   import {debug} from "../../utils/logging";
   import taskApi from "../../api/taskApi";
-  import {TaskDto} from "../../data/dto/task_dto";
+  import {isIpynbScript, TaskDto} from "../../data/dto/task_dto";
   import containerizationApi from "../../api/containerizationApi";
 
   export default {
@@ -126,17 +142,24 @@
         baseImages: [],
 
         name: "",
-        conditions: "",
         scheduled: false,
         baseImage: "",
         cpuRequest: "",
         memoryRequest: "",
         cpuLimit: "",
         memoryLimit: "",
+        saveLog: true,
+        saveScript: false,
+        conditions: "",
         scriptId: ""
       }
     },
     computed: {
+      isSaveScriptAvailable() {
+        const script = this.scripts.find(script => script.id === this.scriptId);
+        if (!script) return false;
+        return isIpynbScript(script.runFilePath);
+      },
       areRequiredFieldsSpecified() {
         return areAllRequiredFieldsSpecified([
           this.name, this.conditions, this.baseImage, this.cpuRequest, this.memoryRequest, this.cpuLimit,
@@ -176,6 +199,8 @@
           this.memoryLimit,
           this.cpuRequest,
           this.cpuLimit,
+          this.saveLog,
+          this.saveScript,
           this.scriptId
         )).then(response => {
           const task = response.data;
@@ -191,18 +216,25 @@
       refreshForm: function () {
         this.name = "";
         this.conditions = "";
-        this.scheduled = false;
         this.baseImage = "";
         this.memoryRequest = "";
         this.memoryLimit = "";
         this.cpuRequest = "";
         this.cpuLimit = "";
+        this.saveLog = true;
+        this.saveScript = false;
+        this.scheduled = false;
         this.scriptId = "";
       }
     },
     beforeMount() {
       this.getSourceScripts();
       this.getBaseImages();
+    },
+    watch: {
+      isSaveScriptAvailable(value) {
+        if (!value) this.saveScript = false
+      }
     }
   }
 </script>

@@ -95,12 +95,12 @@
     computed: {
       infoItems() {
         return [
-          {icon: "", key: "name", value: this.team.name},
-          {icon: "", key: "namespace", value: this.team.namespace.name},
-          {icon: "", key: "CPU quota", value: `${this.team.namespace.resourceQuota.cpuRequest} cores`},
-          {icon: "", key: "CPU limit", value: `${this.team.namespace.resourceQuota.cpuLimit} cores`},
-          {icon: "", key: "RAM quota", value: `${this.team.namespace.resourceQuota.memoryRequest} bytes`},
-          {icon: "", key: "RAM limit", value: `${this.team.namespace.resourceQuota.memoryLimit} bytes`}
+          {key: "name", value: this.team.name},
+          {key: "namespace", value: this.team.namespace.name},
+          {key: "CPU quota", value: `${this.team.namespace.resourceQuota.cpuRequest} cores`},
+          {key: "CPU limit", value: `${this.team.namespace.resourceQuota.cpuLimit} cores`},
+          {key: "RAM quota", value: `${this.team.namespace.resourceQuota.memoryRequest} bytes`},
+          {key: "RAM limit", value: `${this.team.namespace.resourceQuota.memoryLimit} bytes`}
         ]
       },
       areRequiredFieldsSpecified() {

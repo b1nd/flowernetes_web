@@ -9,6 +9,8 @@ export class TaskDto {
     memoryLimit,
     cpuRequest,
     cpuLimit,
+    saveLog,
+    saveScript,
     sourceScriptId
   ) {
     this.name = name;
@@ -20,6 +22,8 @@ export class TaskDto {
     this.memoryLimit = memoryLimit;
     this.cpuRequest = cpuRequest;
     this.cpuLimit = cpuLimit;
+    this.saveLog = saveLog;
+    this.saveScript = saveScript;
     this.sourceScriptId = sourceScriptId;
   }
 }
@@ -31,3 +35,11 @@ export const TaskStatus = {
   SUCCESS: "SUCCESS",
   ERROR: "ERROR"
 };
+
+export function isPyScript(fileName) {
+  return fileName.toLowerCase().endsWith(".py")
+}
+
+export function isIpynbScript(fileName) {
+  return fileName.toLowerCase().endsWith(".ipynb")
+}
