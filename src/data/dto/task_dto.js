@@ -29,17 +29,10 @@ export class TaskDto {
 }
 
 export const TaskStatus = {
+  INACTIVE: "INACTIVE",
   WAITING: "WAITING",
   PENDING: "PENDING",
   RUNNING: "RUNNING",
   SUCCESS: "SUCCESS",
   ERROR: "ERROR"
 };
-
-export function isPyScript(fileName) {
-  return fileName.toLowerCase().endsWith(".py")
-}
-
-export function isIpynbScript(fileName) {
-  return fileName.toLowerCase().endsWith(".ipynb")
-}

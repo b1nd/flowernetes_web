@@ -2,7 +2,7 @@
   <v-dialog v-model="dialog" max-width="800px">
     <template v-slot:activator="{ on }">
       <v-row no-gutters align="center">
-        <v-col cols="12" sm="11">
+        <v-col cols="12" sm="8">
           <v-list-item link v-on="on">
             <v-list-item-content>
               <v-list-item-title
@@ -12,9 +12,16 @@
           </v-list-item>
         </v-col>
         <v-col
+          cols="12"
+          sm="2"
+          class="text-right"
+        >
+          <span :class="taskStatusColor">{{taskStatus}}</span>
+        </v-col>
+        <v-col
           v-if="isRunTaskAvailable"
           cols="12"
-          sm="1"
+          sm="2"
           class="text-right"
         >
           <v-btn
@@ -55,6 +62,8 @@
   import TaskInfo from "./TaskInfo";
   import taskApi from "../../api/taskApi";
   import {debug} from "../../utils/logging";
+  import {TaskStatus} from "../../data/dto/task_dto";
+  import {TaskStatusColor} from "../../data/constants/task_constants";
 
   export default {
     name: "TaskItem",
@@ -67,6 +76,10 @@
       task: {
         type: Object,
         required: true
+      },
+      statuses: {
+        type: Array,
+        required: true
       }
     },
     data() {
@@ -78,6 +91,13 @@
     computed: {
       isRunTaskAvailable() {
         return this.$store.getters.isAdmin || this.$store.getters.sessionTeam.id === this.task.workflow.team.id;
+      },
+      taskStatus() {
+        const taskStatusInfo = this.statuses.find(s => s.taskId === this.editableTask.id);
+        return taskStatusInfo ? taskStatusInfo.taskStatus : TaskStatus.INACTIVE
+      },
+      taskStatusColor() {
+        return TaskStatusColor[this.taskStatus] + "--text";
       }
     },
     methods: {

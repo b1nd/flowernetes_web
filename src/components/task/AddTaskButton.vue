@@ -124,8 +124,9 @@
   import scriptApi from "../../api/scriptApi";
   import {debug} from "../../utils/logging";
   import taskApi from "../../api/taskApi";
-  import {isIpynbScript, TaskDto} from "../../data/dto/task_dto";
+  import {TaskDto} from "../../data/dto/task_dto";
   import containerizationApi from "../../api/containerizationApi";
+  import {isIpynbScript} from "../../data/dto/script_dto";
 
   export default {
     name: "AddTaskButton",

@@ -18,3 +18,11 @@ export class SourceScriptDto {
     this.isPublic = isPublic;
   }
 }
+
+export function isPyScript(fileName) {
+  return fileName.toLowerCase().endsWith(".py")
+}
+
+export function isIpynbScript(fileName) {
+  return fileName.toLowerCase().endsWith(".ipynb")
+}

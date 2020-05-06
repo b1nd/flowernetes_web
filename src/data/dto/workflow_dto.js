@@ -5,3 +5,7 @@ export class WorkflowDto {
     this.team = team;
   }
 }
+
+export const TopicPath = {
+  WORKFLOW: "/topic/workflow"
+};
