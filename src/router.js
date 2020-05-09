@@ -7,6 +7,7 @@ import Team from "./components/team/Team";
 import Workflow from "./components/workflow/Workflow";
 import Script from "./components/script/Script";
 import Workload from "./components/workload/Workload";
+import Monitoring from "./components/monitoring/Monitoring";
 
 Vue.use(Router);
 
@@ -62,6 +63,12 @@ export default new Router({
       path: "/scripts",
       name: "scripts",
       component: Script,
+      beforeEnter: ifAuthenticated
+    },
+    {
+      path: "/monitoring",
+      name: "monitoring",
+      component: Monitoring,
       beforeEnter: ifAuthenticated
     }
   ]

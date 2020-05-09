@@ -33,7 +33,8 @@
       toolbarItems: [
         {title: 'Workflows', link: '/workflows'},
         {title: 'Workloads', link: '/workloads'},
-        {title: 'Scripts', link: '/scripts'}
+        {title: 'Scripts', link: '/scripts'},
+        {title: 'Monitoring', link: '/monitoring'}
       ]
     })
   }

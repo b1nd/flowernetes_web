@@ -7,6 +7,7 @@
     </v-col>
     <v-col cols="12" sm="6" v-if="isWorkflowSelected">
       <TaskList
+        :key="workflow.id"
         :workflow="workflow"
       />
     </v-col>
