@@ -7,5 +7,7 @@ export default {
   addWorkflow: workflowDto => api.put(workflowsMapping, workflowDto),
   getWorkflowTasks: workflowId => api.get(`${workflowsMapping}/${workflowId}/tasks`),
   getWorkflowTasksStatusInfo: workflowId => api.get(`${workflowsMapping}/${workflowId}/tasks/status`),
-  getWorkflowGraph: workflowId => api.get(`${workflowsMapping}/${workflowId}/graph`)
+  getWorkflowGraph: workflowId => api.get(`${workflowsMapping}/${workflowId}/graph`),
+  getWorkflowTasksDuration: (workflowId, taskDurationFilter) =>
+    api.post(`${workflowsMapping}/${workflowId}/duration`, taskDurationFilter)
 }
