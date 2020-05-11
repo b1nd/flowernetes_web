@@ -57,6 +57,12 @@
             :workflow="selectedWorkflow"
           />
         </v-tab-item>
+        <v-tab-item>
+          <GanttChartMonitoring
+            :key="selectedWorkflow.id"
+            :workflow="selectedWorkflow"
+          />
+        </v-tab-item>
       </v-tabs-items>
     </v-col>
   </v-row>
@@ -67,13 +73,14 @@
   import workflowApi from "../../api/workflowApi";
   import {debug} from "../../utils/logging";
   import TaskDurationMonitoring from "./TaskDurationMonitoring";
+  import GanttChartMonitoring from "./GanttChartMonitoring";
 
   export default {
     name: "Monitoring",
-    components: {TaskDurationMonitoring, WorkflowGraphMonitoring},
+    components: {GanttChartMonitoring, TaskDurationMonitoring, WorkflowGraphMonitoring},
     data() {
       return {
-        tabItems: ["Graph View", "Task Duration"],
+        tabItems: ["Graph View", "Task Duration", "Gantt Chart"],
         tab: null,
         workflows: [],
         selectedWorkflow: null

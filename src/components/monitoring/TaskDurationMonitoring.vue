@@ -67,7 +67,7 @@
     },
     computed: {
       isRequiredDataSet() {
-        return this.startDate && this.endDate
+        return this.startDate && this.endDate;
       },
       allowedDates() {
         return date => date <= this.getCurrentDate();
@@ -89,7 +89,10 @@
         }];
 
         const layout = {
-          title: `Task average duration for workflow ${this.workflow.name}`
+          title: `Task average duration for workflow ${this.workflow.name}`,
+          yaxis: {
+            title: "Seconds"
+          }
         };
         const config = {responsive: true};
 
@@ -108,6 +111,9 @@
 
         const layout = {
           title: `Task duration for workflow ${this.workflow.name}`,
+          yaxis: {
+            title: "Seconds"
+          },
           showlegend: true
         };
         const config = {responsive: true};
