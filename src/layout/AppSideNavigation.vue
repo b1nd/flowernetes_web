@@ -49,7 +49,7 @@
           <v-list-item-icon>
             <v-icon>mdi-logout-variant</v-icon>
           </v-list-item-icon>
-          <v-list-item-title>Выйти</v-list-item-title>
+          <v-list-item-title>Logout</v-list-item-title>
         </v-list-item>
       </v-list>
     </template>

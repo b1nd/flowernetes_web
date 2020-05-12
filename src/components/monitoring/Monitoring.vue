@@ -63,6 +63,18 @@
             :workflow="selectedWorkflow"
           />
         </v-tab-item>
+        <v-tab-item>
+          <CpuUsageMonitoring
+            :key="selectedWorkflow.id"
+            :workflow="selectedWorkflow"
+          />
+        </v-tab-item>
+        <v-tab-item>
+          <RamUsageMonitoring
+            :key="selectedWorkflow.id"
+            :workflow="selectedWorkflow"
+          />
+        </v-tab-item>
       </v-tabs-items>
     </v-col>
   </v-row>
@@ -74,13 +86,17 @@
   import {debug} from "../../utils/logging";
   import TaskDurationMonitoring from "./TaskDurationMonitoring";
   import GanttChartMonitoring from "./GanttChartMonitoring";
+  import RamUsageMonitoring from "./RamUsageMonitoring";
+  import CpuUsageMonitoring from "./CpuUsageMonitoring";
 
   export default {
     name: "Monitoring",
-    components: {GanttChartMonitoring, TaskDurationMonitoring, WorkflowGraphMonitoring},
+    components: {
+      CpuUsageMonitoring,
+      RamUsageMonitoring, GanttChartMonitoring, TaskDurationMonitoring, WorkflowGraphMonitoring},
     data() {
       return {
-        tabItems: ["Graph View", "Task Duration", "Gantt Chart"],
+        tabItems: ["Graph View", "Task Duration", "Gantt Chart", "CPU Usage", "RAM Usage"],
         tab: null,
         workflows: [],
         selectedWorkflow: null
