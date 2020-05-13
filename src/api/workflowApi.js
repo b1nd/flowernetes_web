@@ -25,6 +25,10 @@ export default {
       to: to
     }
   }),
-  getWorkflowTasksDuration: (workflowId, taskDurationFilter) =>
-    api.post(`${workflowsMapping}/${workflowId}/duration`, taskDurationFilter)
+  getWorkflowTasksDuration: (workflowId, from, to) => api.get(`${workflowsMapping}/${workflowId}/duration`, {
+    params: {
+      from: from,
+      to: to
+    }
+  })
 }

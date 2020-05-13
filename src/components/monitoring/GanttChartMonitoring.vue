@@ -35,6 +35,7 @@
   import workflowApi from "../../api/workflowApi";
   import {debug} from "../../utils/logging";
   import MenuDatePicker from "../common/MenuDatePicker";
+  import {localDate} from "../../utils/date";
 
   export default {
     name: "GanttChartMonitoring",
@@ -104,7 +105,7 @@
         })
       },
       getCurrentDate() {
-        return new Date().toISOString().substr(0, 10);
+        return localDate();
       }
     },
     mounted() {

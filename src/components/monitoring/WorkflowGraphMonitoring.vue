@@ -9,6 +9,7 @@
 <script>
   import * as dagreD3 from "dagre-d3";
   import * as d3 from "d3";
+  import moment from "moment";
   import {debug} from "../../utils/logging";
   import workflowApi from "../../api/workflowApi";
   import {newStompClient} from "../../api/stomp";
@@ -89,10 +90,7 @@
         });
       },
       formatDate(time) {
-        return new Date(time - new Date().getTimezoneOffset() * 60000)
-          .toISOString().slice(5, 19)
-          .replace('T', ' ')
-          .replace('-', '.')
+        return moment(time).format("MM.DD HH:mm:ss");
       },
       getNodeClassByType(nodeType) {
         return nodeType.toLowerCase()

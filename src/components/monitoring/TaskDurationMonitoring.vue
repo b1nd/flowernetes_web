@@ -46,7 +46,7 @@
   import workflowApi from "../../api/workflowApi";
   import {debug} from "../../utils/logging";
   import MenuDatePicker from "../common/MenuDatePicker";
-  import {TaskDurationFilter} from "../../data/dto/monitoring_dto";
+  import {localDate} from "../../utils/date";
 
   export default {
     name: "TaskDurationMonitoring",
@@ -123,7 +123,8 @@
       async getWorkflowTasksDuration() {
         await workflowApi.getWorkflowTasksDuration(
           this.workflow.id,
-          new TaskDurationFilter(this.dateToDateTime(this.startDate), this.dateToDateTime(this.endDate))
+          this.startDate,
+          this.endDate
         ).then(response => {
           const tasksDurationDto = response.data;
           debug("getWorkflowTasksDuration", "tasksDurationDto", tasksDurationDto);
@@ -132,10 +133,7 @@
         })
       },
       getCurrentDate() {
-        return new Date().toISOString().substr(0, 10);
-      },
-      dateToDateTime(date) {
-        return `${date}T00:00:00`;
+        return localDate();
       }
     },
     mounted() {
