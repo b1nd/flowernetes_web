@@ -65,12 +65,20 @@
       navigationItems() {
         return [
           {title: "Teams", icon: "mdi-account-multiple", link: "/teams", available: this.isTeamsAvailable},
+          {title: "Namespace", icon: "mdi-home", link: "/namespace", available: this.isNamespaceAvailable},
+          {title: "Team Namespace", icon: "mdi-google-analytics", link: "/team/namespace", available: this.isTeamNamespaceAvailable}
         ].filter(it => it.available)
       },
       username() {
         return this.$store.getters.username;
       },
       isTeamsAvailable() {
+        return this.$store.getters.isAdmin;
+      },
+      isNamespaceAvailable() {
+        return this.$store.getters.isTeam;
+      },
+      isTeamNamespaceAvailable() {
         return this.$store.getters.isAdmin;
       }
     },

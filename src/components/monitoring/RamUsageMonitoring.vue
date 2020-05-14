@@ -88,7 +88,11 @@
             text: this.ramUsages.map(ramUsage => ramUsage.usages.map(this.requestUsageToString).join("<br>")),
             mode: 'lines+markers',
             name: 'requests',
-            line: {shape: 'hv'},
+            line: {
+              shape: "hv",
+              dash: "dashdot",
+              width: 1
+            },
             type: 'scatter'
           },
           {

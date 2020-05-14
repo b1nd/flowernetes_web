@@ -8,6 +8,8 @@ import Workflow from "./components/workflow/Workflow";
 import Script from "./components/script/Script";
 import Workload from "./components/workload/Workload";
 import Monitoring from "./components/monitoring/Monitoring";
+import Namespace from "./components/namespace/Namespace";
+import TeamNamespace from "./components/namespace/TeamNamespace";
 
 Vue.use(Router);
 
@@ -69,6 +71,18 @@ export default new Router({
       path: "/monitoring",
       name: "monitoring",
       component: Monitoring,
+      beforeEnter: ifAuthenticated
+    },
+    {
+      path: "/namespace",
+      name: "namespace",
+      component: Namespace,
+      beforeEnter: ifAuthenticated
+    },
+    {
+      path: "/team/namespace",
+      name: "team-namespace",
+      component: TeamNamespace,
       beforeEnter: ifAuthenticated
     }
   ]

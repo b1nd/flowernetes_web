@@ -49,10 +49,10 @@
       }
     },
     methods: {
-      getTeams() {
-        teamApi.getTeams().then(response => {
+      getTeamsInfo() {
+        teamApi.getTeamsInfo().then(response => {
           const allTeamsInfoDto = response.data;
-          debug("getTeams", "allTeamsInfoDto:", allTeamsInfoDto);
+          debug("getTeamsInfo", "allTeamsInfoDto:", allTeamsInfoDto);
           this.teams = allTeamsInfoDto.items;
         })
       },
@@ -64,7 +64,7 @@
       }
     },
     beforeMount() {
-      this.getTeams();
+      this.getTeamsInfo();
     }
   }
 </script>
