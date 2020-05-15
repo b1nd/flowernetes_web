@@ -9,6 +9,7 @@
       <AddTaskButton
         @change="addTask"
         :workflow="workflow"
+        :available-tasks="availableTasks"
         v-if="isAddTaskAllowed"
       />
     </v-card-title>
@@ -23,6 +24,7 @@
               :key="task.id"
               :task="task"
               :statuses="tasksStatusInfo"
+              :available-tasks="availableTasks"
             />
           </v-list>
         </v-col>
@@ -42,6 +44,7 @@
   import TaskItem from "./TaskItem";
   import {newStompClient} from "../../api/stomp";
   import {TopicPath} from "../../data/dto/workflow_dto";
+  import taskApi from "../../api/taskApi";
 
   export default {
     name: "TaskList",
@@ -56,6 +59,7 @@
       return {
         stomp: null,
 
+        availableTasks: [],
         tasks: [],
         tasksStatusInfo: []
       }
@@ -66,6 +70,13 @@
       }
     },
     methods: {
+      async getAvailableTasks() {
+        await taskApi.getTasks().then(response => {
+          const tasksDto = response.data;
+          debug("getAvailableTasks", "tasksDto", tasksDto);
+          this.availableTasks = tasksDto.items;
+        })
+      },
       getWorkflowTasks() {
         workflowApi.getWorkflowTasks(this.workflow.id).then(response => {
           const tasks = response.data;
@@ -82,9 +93,11 @@
       },
       addTask(task) {
         this.tasks = [task, ...this.tasks];
+        this.getAvailableTasks();
       },
       deleteTask(task) {
         this.tasks.splice(this.tasks.indexOf(task), 1);
+        this.getAvailableTasks();
       },
       subscribeOnUpdates() {
         this.stomp = newStompClient();
@@ -117,7 +130,7 @@
       }
     },
     beforeMount() {
-      this.getWorkflowTasks();
+      this.getAvailableTasks().then(() => this.getWorkflowTasks());
       this.subscribeOnUpdates();
       this.getWorkflowTaskStatuses();
     },

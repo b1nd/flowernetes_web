@@ -54,6 +54,7 @@
       @change="onTaskDeleted"
       editable
       v-model="editableTask"
+      :available-tasks="availableTasks"
     />
   </v-dialog>
 </template>
@@ -78,6 +79,10 @@
         required: true
       },
       statuses: {
+        type: Array,
+        required: true
+      },
+      availableTasks: {
         type: Array,
         required: true
       }
