@@ -6,5 +6,7 @@ export const TaskStatusColor = {
   [TaskStatus.PENDING]: "brown",
   [TaskStatus.RUNNING]: "warning",
   [TaskStatus.ERROR]: "error",
+  [TaskStatus.QUOTA_EXCEEDED]: "error",
+  [TaskStatus.KILLED]: "primary",
   [TaskStatus.SUCCESS]: "success"
 };

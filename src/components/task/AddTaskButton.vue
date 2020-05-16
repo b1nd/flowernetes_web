@@ -207,10 +207,10 @@
         const timeCondition = this.timeCondition.trim() ?
           new TimeCondition(this.timeCondition.trim())
           : undefined;
-        const andConditions = this.andConditions.length ?
+        const andConditions = this.andConditions && this.andConditions.length ?
           new AndCondition(this.andConditions.map(taskId => new TaskCondition(taskId)))
           : undefined;
-        const orConditions = this.orConditions.length ?
+        const orConditions = this.orConditions && this.orConditions.length ?
           new OrCondition(this.orConditions.map(taskId => new TaskCondition(taskId)))
           : undefined;
         let logicConditions = null;

@@ -2,7 +2,7 @@
   <v-dialog v-model="dialog" max-width="800px">
     <template v-slot:activator="{ on }">
       <v-row no-gutters align="center">
-        <v-col cols="12" sm="8">
+        <v-col cols="12" sm="7">
           <v-list-item link v-on="on">
             <v-list-item-content>
               <v-list-item-title
@@ -19,19 +19,27 @@
           <span :class="taskStatusColor">{{taskStatus}}</span>
         </v-col>
         <v-col
-          v-if="isRunTaskAvailable"
+          v-if="isControlTaskAvailable"
           cols="12"
-          sm="2"
+          sm="3"
           class="text-right"
         >
           <v-btn
+            :disabled="!isRunTaskAvailable"
             icon
             @click="runTask"
           >
             <v-icon color="success">mdi-play</v-icon>
           </v-btn>
           <v-btn
-            v-if="!editableTask.scheduled"
+            :disabled="!isKillTaskAvailable"
+            icon
+            @click="killTask"
+          >
+            <v-icon color="error">mdi-close</v-icon>
+          </v-btn>
+          <v-btn
+            v-if="isScheduleTaskAvailable"
             icon
             @click="scheduleTask"
           >
@@ -94,7 +102,7 @@
       }
     },
     computed: {
-      isRunTaskAvailable() {
+      isControlTaskAvailable() {
         return this.$store.getters.isAdmin || this.$store.getters.sessionTeam.id === this.task.workflow.team.id;
       },
       taskStatus() {
@@ -103,6 +111,19 @@
       },
       taskStatusColor() {
         return TaskStatusColor[this.taskStatus] + "--text";
+      },
+      isRunTaskAvailable() {
+        return !this.editableTask.scheduled && [
+          TaskStatus.ERROR, TaskStatus.INACTIVE, TaskStatus.SUCCESS, TaskStatus.KILLED
+        ].find(status => status === this.taskStatus)
+      },
+      isKillTaskAvailable() {
+        return [
+          TaskStatus.PENDING, TaskStatus.RUNNING
+        ].find(status => status === this.taskStatus)
+      },
+      isScheduleTaskAvailable() {
+        return !this.editableTask.scheduled || this.taskStatus === TaskStatus.ERROR;
       }
     },
     methods: {
@@ -116,10 +137,16 @@
             debug("runTask", "Task has run", this.task)
           })
       },
+      killTask() {
+        taskApi.killTask(this.editableTask.id)
+          .then(() => {
+            debug("killTask", "Task killed", this.task)
+          })
+      },
       scheduleTask() {
         taskApi.scheduleTask(this.editableTask.id)
           .then(() => {
-            debug("scheduleTask", "Task scheduled");
+            debug("scheduleTask", "Task scheduled", this.task);
             this.editableTask.scheduled = true;
           })
       },

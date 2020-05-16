@@ -216,6 +216,10 @@
     fill: #EF5350;
   }
 
+  .graph .quota_exceeded {
+    fill: #EF5350;
+  }
+
   .graph .waiting {
     fill: #80D8FF;
   }
@@ -225,6 +229,10 @@
   }
 
   .graph .inactive {
+    fill: #E0E0E0;
+  }
+
+  .graph .killed {
     fill: #E0E0E0;
   }
 
