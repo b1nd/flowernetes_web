@@ -4,7 +4,8 @@ import {paginationParams} from "../data/dto/pagination_dto";
 const scriptMapping = "/scripts/source";
 
 export default {
-  getScripts: (page, size, order, orderBy) => api.get(scriptMapping, paginationParams(page, size, order, orderBy)),
+  getScripts: (page, size, properties, directions) =>
+    api.get(scriptMapping, paginationParams(page, size, properties, directions)),
   getSessionScripts: () => api.get(`${scriptMapping}/session`),
   addScript: formData => api.put(scriptMapping, formData),
   deleteScript: scriptId => api.delete(`${scriptMapping}/${scriptId}`),

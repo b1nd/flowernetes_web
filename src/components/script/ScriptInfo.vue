@@ -68,6 +68,7 @@
   import scriptApi from "../../api/scriptApi";
   import {saveAs} from 'file-saver';
   import {debug} from "../../utils/logging";
+  import {fullDate} from "../../utils/date";
 
   export default {
     name: "ScriptInfo",
@@ -96,7 +97,7 @@
           {key: "Tag", value: this.script.tag},
           {key: "File name", value: this.script.filename},
           {key: "Run file path", value: this.script.runFilePath},
-          {key: "Upload date", value: this.script.uploadDate}
+          {key: "Upload date", value: this.formatDate(this.script.uploadDate)}
         ]
       },
       areRequiredFieldsSpecified() {
@@ -104,6 +105,9 @@
       }
     },
     methods: {
+      formatDate(date) {
+        return fullDate(date);
+      },
       downloadScript() {
         this.downloadActive = true;
         scriptApi.downloadScript(this.script.id).then(response => {

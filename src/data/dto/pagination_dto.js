@@ -1,15 +1,15 @@
-export const Order = {
+export const Direction = {
   ASCENDING: "ASCENDING",
   DESCENDING: "DESCENDING"
 };
 
-export function paginationParams(page, size, order, orderBy) {
+export function paginationParams(page, size, properties, directions) {
   return {
     params: {
       page: page,
       size: size,
-      order: order,
-      orderBy: orderBy.join(",")
+      property: properties.join(","),
+      direction: directions.join(",")
     }
   }
 }

@@ -4,54 +4,69 @@
       Workloads
     </v-card-title>
     <v-card-text>
-      <v-col cols="12" sm="12">
-        <v-list>
-          <v-divider/>
-          <WorkloadItem
-            v-for="item in items"
-            :key="item.id"
-            :workload="item"
-            :editable="true"
-          />
-        </v-list>
-        <v-card-text>
-          Workloads count: {{totalItems}}
-        </v-card-text>
+      <v-data-table
+        :headers="headers"
+        :items="items"
+        multi-sort
+        :options.sync="options"
+        :items-per-page="itemsPerPage"
+        :server-items-length="totalItems"
+        :loading="loading"
+      >
+        <template v-slot:item.task.name="{ item }">
+          <WorkloadItem :workload="item"/>
+        </template>
 
-        <v-pagination
-          v-model="currentPage"
-          :length="totalPages"
-          @input="workloadsPage"
-        />
-      </v-col>
+        <template v-slot:item.taskStartTime="{ item }">
+          <span>{{formatDate(item.taskStartTime)}}</span>
+        </template>
+
+        <template v-slot:item.taskCompletionTime="{ item }">
+          <span>{{formatDate(item.taskCompletionTime)}}</span>
+        </template>
+
+        <template v-slot:item.elapsed="{ item }">
+          <span>{{elapsedTime(item)}} seconds</span>
+        </template>
+
+        <template v-slot:item.taskStatus="{ item }">
+          <v-chip :color="statusColor(item.taskStatus)" dark>{{ item.taskStatus }}</v-chip>
+        </template>
+      </v-data-table>
     </v-card-text>
   </v-card>
 </template>
 
 <script>
-  import {Order} from "../../data/dto/pagination_dto";
+  import {Direction} from "../../data/dto/pagination_dto";
   import {debug} from "../../utils/logging";
   import {WorkloadFields} from "../../data/dto/workload_dto";
   import workloadApi from "../../api/workloadApi";
+  import {TaskStatusColor} from "../../data/constants/task_constants";
   import WorkloadItem from "./WorkloadItem";
+  import {differenceSeconds, fullDate} from "../../utils/date";
 
   export default {
     name: "WorkloadList",
     components: {WorkloadItem},
     props: {
-      itemsPerPage: {
+      baseItemsPerPage: {
         type: Number,
-        default: 8
+        default: 15
       },
-      itemsOrder: {
-        type: String,
-        default: Order.DESCENDING
-      },
-      fieldsOrderBy: {
+      baseProperties: {
         type: Array,
         default: function () {
           return [
             WorkloadFields.workloadCreationTime
+          ]
+        }
+      },
+      baseDirections: {
+        type: Array,
+        default: function () {
+          return [
+            Direction.DESCENDING
           ]
         }
       }
@@ -59,21 +74,40 @@
     data() {
       return {
         currentPage: 0,
-        totalPages: 0,
+        itemsPerPage: this.baseItemsPerPage,
+        properties: this.baseProperties,
+        directions: this.baseDirections,
         items: [],
-        totalItems: 0
+        totalItems: 0,
+        loading: true,
+        options: {},
+        headers: [
+          {text: "Id", value: "id"},
+          {text: "Name", value: "task.name"},
+          {text: "Start time", value: "taskStartTime"},
+          {text: "Completion Time", value: "taskCompletionTime"},
+          {text: "Elapsed Time", value: "elapsed", sortable: false},
+          {text: "Status", value: "taskStatus"}
+        ]
       }
     },
     methods: {
-      workloadsPage(page) {
-        this.allWorkloadsPage(page);
+      elapsedTime(item) {
+        return differenceSeconds(item.taskCompletionTime, item.taskStartTime);
       },
-      allWorkloadsPage(page) {
-        workloadApi.getWorkloads(
+      formatDate(date) {
+        return fullDate(date);
+      },
+      workloadsPage(page, itemsPerPage, properties, directions) {
+        this.allWorkloadsPage(page, itemsPerPage, properties, directions);
+      },
+      async allWorkloadsPage(page, itemsPerPage, properties, directions) {
+        this.loading = true;
+        await workloadApi.getWorkloads(
           page - 1,
-          this.itemsPerPage,
-          this.itemsOrder,
-          this.fieldsOrderBy
+          itemsPerPage,
+          properties,
+          directions
         ).then(response => {
           const workloadsPage = response.data;
           debug("getWorkloads", "workloadsPage:", workloadsPage);
@@ -81,18 +115,26 @@
           this.items = workloadsPage.items;
           this.totalItems = workloadsPage.totalItems;
           this.currentPage = workloadsPage.currentPage + 1;
-          this.totalPages = workloadsPage.totalPages;
+          this.loading = false;
         });
       },
-      refreshFirstPage: function () {
-        this.workloadsPage(1);
+      refreshCurrentPage() {
+        this.workloadsPage(this.currentPage, this.itemsPerPage, this.properties, this.directions);
       },
-      refreshCurrentPage: function () {
-        this.workloadsPage(this.currentPage);
+      statusColor(status) {
+        return TaskStatusColor[status];
       }
     },
-    beforeMount() {
-      this.refreshFirstPage();
+    watch: {
+      options(value) {
+        const {page, itemsPerPage, sortBy, sortDesc} = value;
+        const itemsPerPageNormalized = itemsPerPage === -1 ? this.totalItems : itemsPerPage;
+        const directions = sortDesc.map(desc => desc ? Direction.DESCENDING : Direction.ASCENDING);
+        this.itemsPerPage = itemsPerPageNormalized;
+        this.properties = sortBy;
+        this.directions = directions;
+        this.workloadsPage(page, itemsPerPageNormalized, sortBy, directions);
+      }
     }
   }
 </script>

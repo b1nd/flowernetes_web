@@ -1,7 +1,5 @@
 <template>
-  <v-card
-    tile
-  >
+  <v-card tile>
     <v-card-title>
       Scripts
       <v-spacer/>
@@ -11,27 +9,31 @@
       />
     </v-card-title>
     <v-card-text>
-      <v-col cols="12" sm="12">
-        <v-list>
-          <v-divider/>
+      <v-data-table
+        :headers="headers"
+        :items="items"
+        multi-sort
+        :options.sync="options"
+        :items-per-page="itemsPerPage"
+        :server-items-length="totalItems"
+        :loading="loading"
+      >
+        <template v-slot:item.name="{ item }">
           <ScriptItem
-            v-for="item in items"
-            :key="item.id"
             :script="item"
-            :editable="true"
+            editable
             @change="deleteScript"
           />
-        </v-list>
-        <v-card-text>
-          Scripts count: {{totalItems}}
-        </v-card-text>
+        </template>
 
-        <v-pagination
-          v-model="currentPage"
-          :length="totalPages"
-          @input="scriptsPage"
-        />
-      </v-col>
+        <template v-slot:item.uploadDate="{ item }">
+          <span>{{formatDate(item.uploadDate)}}</span>
+        </template>
+
+        <template v-slot:item.isPublic="{ item }">
+          <v-simple-checkbox v-model="item.isPublic" disabled/>
+        </template>
+      </v-data-table>
     </v-card-text>
   </v-card>
 </template>
@@ -41,26 +43,31 @@
   import scriptApi from "../../api/scriptApi"
   import ScriptItem from "./ScriptItem";
   import {debug} from "../../utils/logging";
-  import {Order} from "../../data/dto/pagination_dto";
+  import {Direction} from "../../data/dto/pagination_dto";
   import {SourceScriptDtoFields} from "../../data/dto/script_dto";
+  import {fullDate} from "../../utils/date";
 
   export default {
     name: "ScriptList",
     components: {ScriptItem, AddScriptButton},
     props: {
-      itemsPerPage: {
+      baseItemsPerPage: {
         type: Number,
         default: 15
       },
-      itemsOrder: {
-        type: String,
-        default: Order.DESCENDING
-      },
-      fieldsOrderBy: {
+      baseProperties: {
         type: Array,
         default: function () {
           return [
             SourceScriptDtoFields.uploadDate
+          ]
+        }
+      },
+      baseDirections: {
+        type: Array,
+        default: function () {
+          return [
+            Direction.DESCENDING
           ]
         }
       }
@@ -68,9 +75,20 @@
     data() {
       return {
         currentPage: 0,
-        totalPages: 0,
+        itemsPerPage: this.baseItemsPerPage,
+        properties: this.baseProperties,
+        directions: this.baseDirections,
         items: [],
-        totalItems: 0
+        totalItems: 0,
+        loading: true,
+        options: {},
+        headers: [
+          {text: "Id", value: "id"},
+          {text: "Name", value: "name"},
+          {text: "Tag", value: "tag"},
+          {text: "Upload Date", value: "uploadDate"},
+          {text: "Public", value: "isPublic"}
+        ]
       }
     },
     computed: {
@@ -79,15 +97,19 @@
       }
     },
     methods: {
-      scriptsPage(page) {
-        this.allScriptsPage(page);
+      formatDate(date) {
+        return fullDate(date);
       },
-      allScriptsPage(page) {
-        scriptApi.getScripts(
+      scriptsPage(page, itemsPerPage, properties, directions) {
+        this.allScriptsPage(page, itemsPerPage, properties, directions);
+      },
+      async allScriptsPage(page, itemsPerPage, properties, directions) {
+        this.loading = true;
+        await scriptApi.getScripts(
           page - 1,
-          this.itemsPerPage,
-          this.itemsOrder,
-          this.fieldsOrderBy
+          itemsPerPage,
+          properties,
+          directions
         ).then(response => {
           const sourceScriptPage = response.data;
           debug("getScripts", "sourceScriptPage:", sourceScriptPage);
@@ -95,14 +117,11 @@
           this.items = sourceScriptPage.items;
           this.totalItems = sourceScriptPage.totalItems;
           this.currentPage = sourceScriptPage.currentPage + 1;
-          this.totalPages = sourceScriptPage.totalPages;
+          this.loading = false;
         })
       },
-      refreshFirstPage: function () {
-        this.scriptsPage(1);
-      },
-      refreshCurrentPage: function () {
-        this.scriptsPage(this.currentPage);
+      refreshCurrentPage() {
+        this.scriptsPage(this.currentPage, this.itemsPerPage, this.properties, this.directions);
       },
       addScript() {
         this.refreshCurrentPage();
@@ -111,8 +130,16 @@
         this.refreshCurrentPage();
       }
     },
-    beforeMount() {
-      this.refreshFirstPage();
+    watch: {
+      options(value) {
+        const {page, itemsPerPage, sortBy, sortDesc} = value;
+        const itemsPerPageNormalized = itemsPerPage === -1 ? this.totalItems : itemsPerPage;
+        const directions = sortDesc.map(desc => desc ? Direction.DESCENDING : Direction.ASCENDING);
+        this.itemsPerPage = itemsPerPageNormalized;
+        this.properties = sortBy;
+        this.directions = directions;
+        this.scriptsPage(page, itemsPerPageNormalized, sortBy, directions);
+      }
     }
   }
 </script>

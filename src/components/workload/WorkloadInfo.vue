@@ -109,6 +109,7 @@
       },
       infoItems() {
         return [
+          {key: "Workload Id", value: this.workload.id},
           {key: "Trigger time", value: this.workload.workloadCreationTime},
           {key: "Workload status", value: this.workload.taskStatus, color: TaskStatusColor[this.workload.taskStatus]},
           {key: "Task start time", value: this.workload.taskStartTime},

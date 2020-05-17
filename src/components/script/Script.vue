@@ -1,6 +1,6 @@
 <template>
   <v-row justify="center" no-gutters>
-    <v-col cols="12" sm="6">
+    <v-col cols="12" sm="10">
       <ScriptList/>
     </v-col>
   </v-row>
