@@ -54,7 +54,7 @@
             flat
           />
         </v-col>
-        <v-col cols="12" sm="12">
+        <v-col cols="12" sm="6">
           <v-autocomplete
             clearable
             :items="scripts"
@@ -64,12 +64,26 @@
             label="Script*"
           />
         </v-col>
-        <v-col cols="12" sm="12">
+        <v-col cols="12" sm="6">
           <v-autocomplete
             clearable
             :items="baseImages"
             v-model="baseImage"
             label="Base image*"
+          />
+        </v-col>
+        <v-col cols="12" sm="6">
+          <v-text-field
+            v-model="timeDeadline"
+            label="Time deadline"
+            flat
+          />
+        </v-col>
+        <v-col cols="12" sm="6">
+          <v-text-field
+            v-model="maxRetries"
+            label="Retries limit"
+            flat
           />
         </v-col>
         <v-col cols="12" sm="6">
@@ -212,10 +226,6 @@
       value: {
         type: Object,
         required: true
-      },
-      availableTasks: {
-        type: Array,
-        required: true
       }
     },
     data() {
@@ -229,6 +239,8 @@
         name: this.value.name,
         scheduled: this.value.scheduled,
         baseImage: this.value.baseImage,
+        timeDeadline: this.value.timeDeadline,
+        maxRetries: this.value.maxRetries,
         cpuRequest: this.value.cpuRequest,
         memoryRequest: this.value.memoryRequest,
         cpuLimit: this.value.cpuLimit,
@@ -242,6 +254,9 @@
       }
     },
     computed: {
+      availableTasks() {
+        return this.$store.getters.availableTasks;
+      },
       scriptHeader() {
         return this.script ? `${this.script.name}:${this.script.tag}` : "";
       },
@@ -301,11 +316,16 @@
           this.taskAlternativeIds.map(this.getTaskById).map(this.taskToString).join(", ")
           : "Not specified"
       },
+      timeDeadlineText() {
+        return this.task.timeDeadline ? `${this.task.timeDeadline} seconds` : "Not specified"
+      },
       infoItems() {
         return [
           {key: "Id", value: this.task.id},
           {key: "Name", value: this.task.name},
           {key: "Base Image", value: this.task.baseImage},
+          {key: "Time deadline", value: this.timeDeadlineText},
+          {key: "Retries limit", value: this.task.maxRetries},
           {key: "CPU request", value: `${this.task.cpuRequest} cores`},
           {key: "CPU limit", value: `${this.task.cpuLimit} cores`},
           {key: "Memory request", value: `${this.task.memoryRequest} bytes`},
@@ -405,6 +425,8 @@
           this.conditions(),
           this.scheduled,
           this.baseImage,
+          this.timeDeadline,
+          this.maxRetries,
           this.memoryRequest,
           this.memoryLimit,
           this.cpuRequest,
@@ -417,6 +439,7 @@
           debug("editTask", "task", task);
           this.task = task;
           this.isEditActive = false;
+          this.refreshTask();
           this.$emit("input", this.task);
         })
       },
@@ -428,6 +451,8 @@
         this.name = this.task.name;
         this.scheduled = this.task.scheduled;
         this.baseImage = this.task.baseImage;
+        this.timeDeadline = this.task.timeDeadline;
+        this.maxRetries = this.task.maxRetries;
         this.cpuRequest = this.task.cpuRequest;
         this.memoryRequest = this.task.memoryRequest;
         this.cpuLimit = this.task.cpuLimit;

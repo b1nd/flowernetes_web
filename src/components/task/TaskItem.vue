@@ -2,7 +2,7 @@
   <v-dialog v-model="dialog" max-width="800px">
     <template v-slot:activator="{ on }">
       <v-row no-gutters align="center">
-        <v-col cols="12" sm="7">
+        <v-col cols="12" sm="6">
           <v-list-item link v-on="on">
             <v-list-item-content>
               <v-list-item-title
@@ -13,7 +13,7 @@
         </v-col>
         <v-col
           cols="12"
-          sm="2"
+          sm="3"
           class="text-right"
         >
           <span :class="taskStatusColor">{{taskStatus}}</span>
@@ -62,7 +62,6 @@
       @change="onTaskDeleted"
       editable
       v-model="editableTask"
-      :available-tasks="availableTasks"
     />
   </v-dialog>
 </template>
@@ -89,10 +88,6 @@
       statuses: {
         type: Array,
         required: true
-      },
-      availableTasks: {
-        type: Array,
-        required: true
       }
     },
     data() {
@@ -114,12 +109,12 @@
       },
       isRunTaskAvailable() {
         return !this.editableTask.scheduled && [
-          TaskStatus.ERROR, TaskStatus.INACTIVE, TaskStatus.SUCCESS, TaskStatus.KILLED
+          TaskStatus.ERROR, TaskStatus.INACTIVE, TaskStatus.SUCCESS, TaskStatus.KILLED, TaskStatus.TIME_EXCEEDED
         ].find(status => status === this.taskStatus)
       },
       isKillTaskAvailable() {
         return [
-          TaskStatus.PENDING, TaskStatus.RUNNING
+          TaskStatus.RUNNING
         ].find(status => status === this.taskStatus)
       },
       isScheduleTaskAvailable() {

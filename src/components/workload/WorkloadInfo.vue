@@ -125,8 +125,7 @@
           (this.workload.taskStatus === TaskStatus.SUCCESS || this.workload.taskStatus === TaskStatus.ERROR)
       },
       isDownloadOutputScriptAvailable() {
-        return this.workload.task.saveScript &&
-          (this.workload.taskStatus === TaskStatus.SUCCESS || this.workload.taskStatus === TaskStatus.ERROR)
+        return this.workload.task.saveScript && this.workload.taskStatus === TaskStatus.SUCCESS
       }
     },
     methods: {

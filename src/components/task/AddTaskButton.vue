@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" persistent max-width="600px">
+  <v-dialog v-model="dialog" persistent max-width="800px">
     <template v-slot:activator="{ on }">
       <v-btn icon v-on="on">
         <v-icon>mdi-plus</v-icon>
@@ -19,7 +19,7 @@
               flat
             />
           </v-col>
-          <v-col cols="12" sm="12">
+          <v-col cols="12" sm="6">
             <v-autocomplete
               clearable
               :items="scripts"
@@ -29,12 +29,26 @@
               label="Script*"
             />
           </v-col>
-          <v-col cols="12" sm="12">
+          <v-col cols="12" sm="6">
             <v-autocomplete
               clearable
               :items="baseImages"
               v-model="baseImage"
               label="Base image*"
+            />
+          </v-col>
+          <v-col cols="12" sm="6">
+            <v-text-field
+              v-model="timeDeadline"
+              label="Time deadline"
+              flat
+            />
+          </v-col>
+          <v-col cols="12" sm="6">
+            <v-text-field
+              v-model="maxRetries"
+              label="Retries limit"
+              flat
             />
           </v-col>
           <v-col cols="12" sm="6">
@@ -162,10 +176,6 @@
       workflow: {
         type: Object,
         required: true
-      },
-      availableTasks: {
-        type: Array,
-        required: true
       }
     },
     data() {
@@ -177,6 +187,8 @@
         name: "",
         scheduled: false,
         baseImage: "",
+        timeDeadline: null,
+        maxRetries: 0,
         cpuRequest: "",
         memoryRequest: "",
         cpuLimit: "",
@@ -190,6 +202,9 @@
       }
     },
     computed: {
+      availableTasks() {
+        return this.$store.getters.availableTasks;
+      },
       isSaveScriptAvailable() {
         const script = this.scripts.find(script => script.id === this.scriptId);
         if (!script) return false;
@@ -260,6 +275,8 @@
           this.conditions(),
           this.scheduled,
           this.baseImage,
+          this.timeDeadline,
+          this.maxRetries,
           this.memoryRequest,
           this.memoryLimit,
           this.cpuRequest,
@@ -284,6 +301,8 @@
         this.andConditions = null;
         this.orConditions = null;
         this.baseImage = "";
+        this.timeDeadline = null;
+        this.maxRetries = 0;
         this.memoryRequest = "";
         this.memoryLimit = "";
         this.cpuRequest = "";

@@ -12,6 +12,7 @@ import {cleanAuthorizationHeader, setAuthorizationHeader} from "../../api/api";
 import {getItemOrEmpty, getItemOrThrow, removeItem, setItem} from "../../utils/local_storage";
 import {debug, debugError} from "../../utils/logging";
 import {SESSION_TEAM} from "../constants/team_constants";
+import {UPDATE_AVAILABLE_TASKS} from "../constants/task_constants";
 
 const state = {
   token: getItemOrEmpty(USER_TOKEN_NAME),
@@ -66,6 +67,7 @@ const actions = {
         .then((userInfoResponse) => commit(AUTH_REFRESH, userInfoResponse))
         .then(() => commit(AUTH_SUCCESS, token))
         .then(() => dispatch(SESSION_TEAM))
+        .then(() => dispatch(UPDATE_AVAILABLE_TASKS))
     } catch (e) {
       commit(AUTH_ERROR);
       cleanAuthorizationHeader();

@@ -220,6 +220,10 @@
     fill: #EF5350;
   }
 
+  .graph .time_exceeded {
+    fill: #EF5350;
+  }
+
   .graph .waiting {
     fill: #80D8FF;
   }

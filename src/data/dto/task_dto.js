@@ -5,6 +5,8 @@ export class TaskDto {
     conditions,
     scheduled,
     baseImage,
+    timeDeadline,
+    maxRetries,
     memoryRequest,
     memoryLimit,
     cpuRequest,
@@ -18,6 +20,8 @@ export class TaskDto {
     this.conditions = conditions;
     this.scheduled = scheduled;
     this.baseImage = baseImage;
+    this.timeDeadline = timeDeadline;
+    this.maxRetries = maxRetries;
     this.memoryRequest = memoryRequest;
     this.memoryLimit = memoryLimit;
     this.cpuRequest = cpuRequest;
@@ -78,5 +82,6 @@ export const TaskStatus = {
   SUCCESS: "SUCCESS",
   KILLED: "KILLED",
   QUOTA_EXCEEDED: "QUOTA_EXCEEDED",
+  TIME_EXCEEDED: "TIME_EXCEEDED",
   ERROR: "ERROR"
 };

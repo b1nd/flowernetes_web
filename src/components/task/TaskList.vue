@@ -9,7 +9,6 @@
       <AddTaskButton
         @change="addTask"
         :workflow="workflow"
-        :available-tasks="availableTasks"
         v-if="isAddTaskAllowed"
       />
     </v-card-title>
@@ -24,7 +23,6 @@
               :key="task.id"
               :task="task"
               :statuses="tasksStatusInfo"
-              :available-tasks="availableTasks"
             />
           </v-list>
         </v-col>
@@ -44,7 +42,7 @@
   import TaskItem from "./TaskItem";
   import {newStompClient} from "../../api/stomp";
   import {TopicPath} from "../../data/dto/workflow_dto";
-  import taskApi from "../../api/taskApi";
+  import {UPDATE_AVAILABLE_TASKS} from "../../data/constants/task_constants";
 
   export default {
     name: "TaskList",
@@ -59,7 +57,6 @@
       return {
         stomp: null,
 
-        availableTasks: [],
         tasks: [],
         tasksStatusInfo: []
       }
@@ -71,11 +68,7 @@
     },
     methods: {
       async getAvailableTasks() {
-        await taskApi.getTasks().then(response => {
-          const tasksDto = response.data;
-          debug("getAvailableTasks", "tasksDto", tasksDto);
-          this.availableTasks = tasksDto.items;
-        })
+        await this.$store.dispatch(UPDATE_AVAILABLE_TASKS);
       },
       getWorkflowTasks() {
         workflowApi.getWorkflowTasks(this.workflow.id).then(response => {
