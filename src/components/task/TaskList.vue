@@ -13,24 +13,61 @@
       />
     </v-card-title>
     <v-card-text>
-      <v-row>
-        <v-col cols="12" sm="12" v-if="tasks.length && tasksStatusInfo.length">
-          <v-list>
-            <v-divider/>
-            <TaskItem
-              @change="deleteTask"
-              v-for="task in tasks"
-              :key="task.id"
-              :task="task"
-              :statuses="tasksStatusInfo"
-            />
-          </v-list>
-        </v-col>
+      <v-data-table
+        :headers="headers"
+        :items="tasks"
+        multi-sort
+        :items-per-page="-1"
+      >
+        <template v-slot:item.name="{ item }">
+          <TaskItem
+            @change="deleteTask"
+            editable
+            :task="item"
+          />
+        </template>
+        <template v-slot:item.status="{ item }">
+          <span :class="taskStatusColor(item)">{{item.status}}</span>
+        </template>
 
-        <v-col cols="12" sm="12" v-else>
-          <span>There are no tasks in workflow {{workflow.name}}</span>
-        </v-col>
-      </v-row>
+        <template v-slot:item.actions="{ item }">
+          <div v-if="isControlTaskAvailable(item)">
+
+            <v-btn
+              :disabled="!isRunTaskAvailable(item)"
+              icon
+              @click="runTask(item)"
+            >
+              <v-icon color="success">mdi-play</v-icon>
+            </v-btn>
+
+            <v-btn
+              :disabled="!isKillTaskAvailable(item)"
+              icon
+              @click="killTask(item)"
+            >
+              <v-icon color="error">mdi-close</v-icon>
+            </v-btn>
+
+            <v-btn
+              v-if="isScheduleTaskAvailable(item)"
+              icon
+              @click="scheduleTask(item)"
+            >
+              <v-icon color="warning">mdi-alarm-check</v-icon>
+            </v-btn>
+
+            <v-btn
+              v-else
+              icon
+              @click="removeTaskFromSchedule(item)"
+            >
+              <v-icon color="error">mdi-alarm-off</v-icon>
+            </v-btn>
+
+          </div>
+        </template>
+      </v-data-table>
     </v-card-text>
   </v-card>
 </template>
@@ -42,7 +79,9 @@
   import TaskItem from "./TaskItem";
   import {newStompClient} from "../../api/stomp";
   import {TopicPath} from "../../data/dto/workflow_dto";
-  import {UPDATE_AVAILABLE_TASKS} from "../../data/constants/task_constants";
+  import {TaskStatusColor, UPDATE_AVAILABLE_TASKS} from "../../data/constants/task_constants";
+  import {TaskStatus} from "../../data/dto/task_dto";
+  import taskApi from "../../api/taskApi";
 
   export default {
     name: "TaskList",
@@ -58,7 +97,15 @@
         stomp: null,
 
         tasks: [],
-        tasksStatusInfo: []
+        totalItems: 0,
+        loading: true,
+        tasksStatusInfo: {},
+        headers: [
+          {text: "Id", value: "id"},
+          {text: "Name", value: "name"},
+          {text: "Status", value: "status", align: "right", sortable: false},
+          {text: "Actions", value: "actions", align: "right", sortable: false}
+        ]
       }
     },
     computed: {
@@ -70,12 +117,65 @@
       async getAvailableTasks() {
         await this.$store.dispatch(UPDATE_AVAILABLE_TASKS);
       },
-      getWorkflowTasks() {
-        workflowApi.getWorkflowTasks(this.workflow.id).then(response => {
+      taskStatusColor(task) {
+        return TaskStatusColor[task.status] + "--text";
+      },
+      isControlTaskAvailable(task) {
+        return this.$store.getters.isAdmin || this.$store.getters.sessionTeam.id === task.workflow.team.id;
+      },
+      isRunTaskAvailable(task) {
+        return !task.scheduled && [
+          TaskStatus.SUCCESS, TaskStatus.ERROR, TaskStatus.INACTIVE, TaskStatus.KILLED, TaskStatus.TIME_EXCEEDED
+        ].find(status => status === task.status)
+      },
+      isKillTaskAvailable(task) {
+        return [
+          TaskStatus.RUNNING, TaskStatus.PENDING
+        ].find(status => status === task.status)
+      },
+      isScheduleTaskAvailable(task) {
+        return !task.scheduled || task.status === TaskStatus.ERROR;
+      },
+      runTask(task) {
+        taskApi.runTask(task.id)
+          .then(() => {
+            debug("runTask", "Task has run", task)
+          })
+      },
+      killTask(task) {
+        taskApi.killTask(task.id)
+          .then(() => {
+            debug("killTask", "Task killed", task)
+          })
+      },
+      scheduleTask(task) {
+        taskApi.scheduleTask(task.id)
+          .then(() => {
+            debug("scheduleTask", "Task scheduled", task);
+            task.scheduled = true;
+          })
+      },
+      removeTaskFromSchedule(task) {
+        taskApi.unscheduleTask(task.id)
+          .then(() => {
+            debug("unscheduleTask", "Task removed from schedule", task);
+            task.scheduled = false;
+          })
+      },
+      async getWorkflowTasks() {
+        await workflowApi.getWorkflowTasks(this.workflow.id).then(response => {
           const tasks = response.data;
           debug("getWorkflowTasks", "tasks", tasks);
+          tasks.forEach(this.setTaskStatus);
           this.tasks = tasks;
         })
+      },
+      getTaskStatus(task) {
+        const taskStatusInfo = this.tasksStatusInfo[task.id];
+        return taskStatusInfo ? taskStatusInfo.taskStatus : TaskStatus.INACTIVE;
+      },
+      setTaskStatus(task) {
+        task["status"] = this.getTaskStatus(task);
       },
       getWorkflowTaskStatuses() {
         workflowApi.getWorkflowTasksStatusInfo(this.workflow.id).then(response => {
@@ -85,6 +185,7 @@
         })
       },
       addTask(task) {
+        this.setTaskStatus(task);
         this.tasks = [task, ...this.tasks];
         this.getAvailableTasks();
       },
@@ -103,14 +204,22 @@
           });
         });
       },
+      updateTaskStatus(taskId) {
+        const task = this.tasks.find(t => t.id === taskId);
+        if (task && this.tasksStatusInfo[taskId]) {
+          task["status"] = this.tasksStatusInfo[taskId].taskStatus;
+        }
+      },
       onNewTaskStatusInfo(newStatus) {
-        const oldStatus = this.tasksStatusInfo.find(s => s.taskId === newStatus.taskId);
+        const oldStatus = this.tasksStatusInfo[newStatus.taskId];
         if (oldStatus) {
           if (newStatus.lastTransitionTime >= oldStatus.lastTransitionTime) {
-            this.tasksStatusInfo.splice(this.tasksStatusInfo.indexOf(oldStatus), 1, newStatus);
+            this.tasksStatusInfo[newStatus.taskId] = newStatus;
+            this.updateTaskStatus(newStatus.taskId);
           }
         } else {
-          this.tasksStatusInfo.push(newStatus);
+          this.tasksStatusInfo[newStatus.taskId] = newStatus;
+          this.updateTaskStatus(newStatus.taskId);
         }
       },
       closeConnection() {

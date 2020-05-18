@@ -132,6 +132,8 @@
           debug("addScript", "sourceScript", sourceScript);
           this.$emit("change", sourceScript);
           this.close();
+        }).catch(() => {
+          this.loading = false;
         });
       },
       refreshForm: function () {

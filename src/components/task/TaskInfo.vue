@@ -165,13 +165,6 @@
             flat
           />
         </v-col>
-        <v-col cols="12" sm="12">
-          <v-checkbox
-            v-model="scheduled"
-            label="Schedule"
-            flat
-          />
-        </v-col>
       </v-row>
 
     </v-card-text>
