@@ -14,6 +14,7 @@
   import workflowApi from "../../api/workflowApi";
   import {newStompClient} from "../../api/stomp";
   import {TopicPath} from "../../data/dto/workflow_dto";
+  import snackbarMessage from "../../utils/snackbarMessage";
 
   export default {
     name: "WorkflowGraphMonitoring",
@@ -37,8 +38,10 @@
     },
     methods: {
       setupGraph() {
-        // todo: message if graph is empty
-        if (!this.workflowGraph.nodes.length) return;
+        if (!this.workflowGraph.nodes.length) {
+          snackbarMessage.show("Graph is empty!");
+          return;
+        }
 
         this.graph = new dagreD3.graphlib.Graph()
           .setGraph({

@@ -4,14 +4,14 @@
       Task info
       <v-spacer/>
       <v-btn
-        v-if="editable && !isEditActive"
+        v-if="editable && !isEditActive && isEditTaskAvailable"
         icon
         @click="isEditActive = true"
       >
         <v-icon>mdi-pencil</v-icon>
       </v-btn>
       <v-btn
-        v-if="editable"
+        v-if="editable && isEditTaskAvailable"
         icon
         @click="deleteTask"
       >
@@ -247,6 +247,9 @@
       }
     },
     computed: {
+      isEditTaskAvailable() {
+        return this.$store.getters.isTeam;
+      },
       availableTasks() {
         return this.$store.getters.availableTasks;
       },
@@ -406,10 +409,7 @@
         taskApi.deleteTask(this.task.id).then(() => {
           debug("deleteTask", "Task deleted successfully", this.task);
           this.$emit("change", this.task);
-        }).catch(error => {
-          // todo: show snackbar?
-          throw error;
-        });
+        })
       },
       save() {
         taskApi.updateTask(this.task.id, new TaskDto(

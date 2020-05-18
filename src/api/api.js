@@ -3,6 +3,7 @@ import store from "../data/store.js";
 import {apiUrl} from "../data/constants/env_constants"
 import {AUTH_LOGOUT} from "../data/constants/auth_constants";
 import {debug, debugError} from "../utils/logging";
+import snackbarMessage from "../utils/snackbarMessage";
 
 const api = axios.create({
   baseURL: apiUrl
@@ -16,6 +17,11 @@ api.interceptors.response.use(response => response, async function (error) {
       });
   }
   debugError(error.response.data);
+  if (error.response.data.message) {
+    snackbarMessage.show(error.response.data.message);
+  } else {
+    snackbarMessage.show(error.response.data);
+  }
   return Promise.reject(error);
 });
 
