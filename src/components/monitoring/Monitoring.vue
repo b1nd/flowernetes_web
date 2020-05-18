@@ -47,7 +47,7 @@
           <!--fixme: idk how to set full height on parent-->
           <WorkflowGraphMonitoring
             :key="selectedWorkflow.id"
-            style="height: calc(100vh - 200px)"
+            style="height: calc(100vh - 240px)"
             :workflow="selectedWorkflow"
           />
         </v-tab-item>

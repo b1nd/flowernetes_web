@@ -1,9 +1,34 @@
 <template>
-  <div class="graph">
-    <svg>
-      <g/>
-    </svg>
-  </div>
+  <v-card>
+    <v-card-title>
+      <v-btn
+        v-for="border in legendBorder"
+        :key="border.name"
+        class="mx-1"
+        x-small
+        outlined
+        :color="border.color"
+      >
+        {{border.name}}
+      </v-btn>
+      <v-spacer/>
+      <v-btn
+        v-for="status in legendStatuses"
+        :key="status.name"
+        class="mx-1"
+        x-small
+        elevation="0"
+        :color="status.color"
+      >
+        {{status.name}}
+      </v-btn>
+    </v-card-title>
+    <div class="graph">
+      <svg>
+        <g/>
+      </svg>
+    </div>
+  </v-card>
 </template>
 
 <script>
@@ -26,6 +51,21 @@
     },
     data() {
       return {
+        legendBorder: [
+          {name: "outer dependency", color: "#01579B"},
+          {name: "inner dependency", color: "black"}
+        ],
+        legendStatuses: [
+          {name: "waiting", color: "#80D8FF"},
+          {name: "pending", color: "#A1887F"},
+          {name: "running", color: "#FBC02D"},
+          {name: "success", color: "#69F0AE"},
+          {name: "error", color: "#EF5350"},
+          {name: "quota exceeded", color: "#F48FB1"},
+          {name: "time exceeded", color: "#FF8A65"},
+          {name: "killed", color: "#D1C4E9"},
+          {name: "inactive", color: "#E0E0E0"}
+        ],
         render: new dagreD3.render(),
         stomp: null,
         workflowGraph: null,
@@ -220,11 +260,11 @@
   }
 
   .graph .quota_exceeded {
-    fill: #EF5350;
+    fill: #F48FB1;
   }
 
   .graph .time_exceeded {
-    fill: #EF5350;
+    fill: #FF8A65;
   }
 
   .graph .waiting {
@@ -235,11 +275,11 @@
     fill: #FBC02D;
   }
 
-  .graph .inactive {
-    fill: #E0E0E0;
+  .graph .killed {
+    fill: #D1C4E9;
   }
 
-  .graph .killed {
+  .graph .inactive {
     fill: #E0E0E0;
   }
 
