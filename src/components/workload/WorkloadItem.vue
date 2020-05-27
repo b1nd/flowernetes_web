@@ -33,7 +33,12 @@
     },
     computed: {
       title() {
-        return this.workload.task.name;
+        return this.taskSelectionText(this.workload.task);
+      }
+    },
+    methods: {
+      taskSelectionText(task) {
+        return task && task.name ? `${task.workflow.name}/${task.name}` : "";
       }
     }
   }

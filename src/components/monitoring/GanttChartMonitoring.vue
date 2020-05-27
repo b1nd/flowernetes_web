@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-card-text>
-      <v-row>
+      <v-row class="align-center">
         <v-col cols="12" sm="2">
           <MenuDatePicker
             :allowed-dates="allowedDates"

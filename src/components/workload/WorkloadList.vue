@@ -1,7 +1,57 @@
 <template>
   <v-card tile>
     <v-card-title>
-      Workloads
+      <v-row dense class="align-center">
+        <v-col cols="12" sm="1">
+          <v-text-field
+            v-model="selectedId"
+            clearable
+            label="Id"
+            hide-details
+          />
+        </v-col>
+        <v-col cols="12" xl="4" sm="3">
+          <v-autocomplete
+            v-model="selectedTaskId"
+            clearable
+            label="Name"
+            :item-text="taskSelectionText"
+            item-value="id"
+            :items="availableTasks"
+            hide-details
+          />
+        </v-col>
+        <v-col cols="12" sm="2">
+          <MenuDatePicker
+            label="Start date"
+            v-model="startDate"
+          />
+        </v-col>
+        <v-col cols="12" sm="2">
+          <MenuDatePicker
+            label="End date"
+            v-model="endDate"
+          />
+        </v-col>
+        <v-col cols="12" sm="2">
+          <v-select
+            clearable
+            hide-details
+            label="Status"
+            v-model="selectedStatus"
+            :items="availableStatuses"
+          />
+        </v-col>
+        <v-col cols="12" xl="1" sm="2" class="text-center">
+          <v-btn
+            outlined
+            @click="refreshPage"
+          >
+            apply
+            <v-icon class="ml-1">mdi-magnify</v-icon>
+          </v-btn>
+        </v-col>
+      </v-row>
     </v-card-title>
     <v-card-text>
       <v-data-table
@@ -40,15 +90,17 @@
 <script>
   import {Direction} from "../../data/dto/pagination_dto";
   import {debug} from "../../utils/logging";
-  import {WorkloadFields} from "../../data/dto/workload_dto";
+  import {WorkloadFields, WorkloadFilter} from "../../data/dto/workload_dto";
   import workloadApi from "../../api/workloadApi";
   import {TaskStatusColor} from "../../data/constants/task_constants";
   import WorkloadItem from "./WorkloadItem";
   import {differenceSeconds, fullDate} from "../../utils/date";
+  import MenuDatePicker from "../common/MenuDatePicker";
+  import {TaskStatus} from "../../data/dto/task_dto";
 
   export default {
     name: "WorkloadList",
-    components: {WorkloadItem},
+    components: {MenuDatePicker, WorkloadItem},
     props: {
       baseItemsPerPage: {
         type: Number,
@@ -73,11 +125,15 @@
     },
     data() {
       return {
-        currentPage: 0,
         itemsPerPage: this.baseItemsPerPage,
         properties: this.baseProperties,
         directions: this.baseDirections,
         items: [],
+        selectedId: null,
+        selectedTaskId: null,
+        startDate: null,
+        endDate: null,
+        selectedStatus: null,
         totalItems: 0,
         loading: true,
         options: {},
@@ -91,6 +147,14 @@
         ]
       }
     },
+    computed: {
+      availableTasks() {
+        return this.$store.getters.availableTasks;
+      },
+      availableStatuses() {
+        return Object.keys(TaskStatus);
+      }
+    },
     methods: {
       elapsedTime(item) {
         return differenceSeconds(item.taskCompletionTime, item.taskStartTime);
@@ -98,28 +162,35 @@
       formatDate(date) {
         return fullDate(date);
       },
-      workloadsPage(page, itemsPerPage, properties, directions) {
-        this.allWorkloadsPage(page, itemsPerPage, properties, directions);
+      taskSelectionText(task) {
+        return task && task.name ? `${task.workflow.name}/${task.name}` : "";
       },
-      async allWorkloadsPage(page, itemsPerPage, properties, directions) {
+      workloadsPage(page, itemsPerPage, properties, directions) {
         this.loading = true;
-        await workloadApi.getWorkloads(
+        workloadApi.getFilteredWorkloads(
           page - 1,
           itemsPerPage,
           properties,
-          directions
+          directions,
+          new WorkloadFilter(
+            this.selectedId,
+            this.selectedTaskId,
+            this.startDate,
+            this.endDate,
+            this.selectedStatus
+          )
         ).then(response => {
           const workloadsPage = response.data;
           debug("getWorkloads", "workloadsPage:", workloadsPage);
 
           this.items = workloadsPage.items;
           this.totalItems = workloadsPage.totalItems;
-          this.currentPage = workloadsPage.currentPage + 1;
           this.loading = false;
         });
       },
-      refreshCurrentPage() {
-        this.workloadsPage(this.currentPage, this.itemsPerPage, this.properties, this.directions);
+      refreshPage() {
+        this.options.page = 1;
+        this.workloadsPage(this.options.page, this.itemsPerPage, this.properties, this.directions);
       },
       statusColor(status) {
         return TaskStatusColor[status];

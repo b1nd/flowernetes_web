@@ -8,6 +8,7 @@
   >
     <template v-slot:activator="{ on }">
       <v-text-field
+        hide-details
         clearable
         v-model="valueInput"
         :label="label"
