@@ -1,18 +1,14 @@
 <template>
   <v-dialog v-model="dialog" max-width="800px">
     <template v-slot:activator="{ on }">
-      <div>
-        <v-list-item link v-on="on">
-          <v-list-item-content>
-            <v-list-item-title
-              v-text="title"
-            />
-          </v-list-item-content>
-        </v-list-item>
-        <v-divider/>
-      </div>
+      <v-list-item link v-on="on" class="pa-0">
+        <v-list-item-content>
+          {{title}}
+        </v-list-item-content>
+      </v-list-item>
     </template>
     <TeamInfo
+      @input="v => $emit('input', v)"
       @change="teamDeleted"
       :editable="editable"
       v-if="dialog"

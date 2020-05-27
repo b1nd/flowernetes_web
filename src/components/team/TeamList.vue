@@ -1,7 +1,5 @@
 <template>
-  <v-card
-    tile
-  >
+  <v-card tile>
     <v-card-title>
       Teams
       <v-spacer/>
@@ -10,26 +8,21 @@
       />
     </v-card-title>
     <v-card-text>
-      <v-row>
-        <v-col cols="12" sm="12"
-          v-if="teams.length"
-        >
-          <v-list>
-            <v-divider/>
-            <TeamItem
-              @change="deleteTeam"
-              editable
-              v-for="team in teams"
-              :key="team.id"
-              :team="team"
-            />
-          </v-list>
-        </v-col>
-
-        <v-col cols="12" sm="12" v-else>
-          <span>There are no teams</span>
-        </v-col>
-      </v-row>
+      <v-data-table
+        :headers="headers"
+        :items="teams"
+        multi-sort
+        :items-per-page="-1"
+      >
+        <template v-slot:item.name="{ item }">
+          <TeamItem
+            @input="getTeamsInfo"
+            @change="deleteTeam"
+            editable
+            :team="item"
+          />
+        </template>
+      </v-data-table>
     </v-card-text>
   </v-card>
 </template>
@@ -45,7 +38,12 @@
     components: {TeamItem, AddTeamButton},
     data() {
       return {
-        teams: []
+        teams: [],
+        headers: [
+          {text: "Id", value: "id"},
+          {text: "Name", value: "name"},
+          {text: "Namespace", value: "namespace.name"}
+        ]
       }
     },
     methods: {
