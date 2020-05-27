@@ -1,7 +1,7 @@
 <template>
   <v-row no-gutters>
     <v-col cols="12" sm="12">
-      <v-row>
+      <v-row class="align-center">
         <v-col cols="12" sm="2">
           <MenuDatePicker
             :allowed-dates="allowedDates"

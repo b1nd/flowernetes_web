@@ -11,13 +11,6 @@
         <v-icon>mdi-download</v-icon>
       </v-btn>
       <v-btn
-        v-if="editable && !isEditActive"
-        icon
-        @click="isEditActive = true"
-      >
-        <v-icon>mdi-pencil</v-icon>
-      </v-btn>
-      <v-btn
         v-if="editable"
         icon
         @click="deleteScript"
@@ -95,6 +88,7 @@
         return [
           {key: "Name", value: this.script.name},
           {key: "Tag", value: this.script.tag},
+          {key: "Public", value: this.script.isPublic},
           {key: "File name", value: this.script.filename},
           {key: "Run file path", value: this.script.runFilePath},
           {key: "Upload date", value: this.formatDate(this.script.uploadDate)}

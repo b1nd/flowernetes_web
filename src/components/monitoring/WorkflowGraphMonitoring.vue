@@ -185,7 +185,7 @@
       },
       async subscribeOnUpdates() {
         this.stomp = newStompClient();
-        this.stomp.connect({}, () => {
+        await this.stomp.connect({}, () => {
           debug("Stomp connected");
           const topic = `${TopicPath.WORKFLOW}/${this.workflow.id}`;
           debug("Subscribed on topic", topic);

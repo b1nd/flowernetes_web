@@ -1,12 +1,48 @@
 <template>
   <v-card tile>
     <v-card-title>
-      Scripts
-      <v-spacer/>
-      <AddScriptButton
-        @change="addScript"
-        v-if="isAddScriptAvailable"
-      />
+      <v-row dense class="align-center">
+        <v-col cols="12" sm="2">
+          <v-text-field
+            v-model="selectedScriptId"
+            label="Id"
+            clearable
+            hide-details
+          />
+        </v-col>
+        <v-col cols="12" sm="5">
+          <v-combobox
+            v-model="selectedScriptName"
+            label="Name"
+            :items="availableScriptsNames"
+            clearable
+            hide-details
+          />
+        </v-col>
+        <v-col cols="12" sm="2">
+          <v-text-field
+            v-model="selectedScriptTag"
+            clearable
+            label="Tag"
+            hide-details
+          />
+        </v-col>
+        <v-col cols="12" xl="1" sm="2" class="text-center">
+          <v-btn
+            outlined
+            @click="refreshFirstPage"
+          >
+            apply
+            <v-icon class="ml-1">mdi-magnify</v-icon>
+          </v-btn>
+        </v-col>
+        <v-col cols="12" xl="2" sm="1" class="text-right">
+          <AddScriptButton
+            @change="addScript"
+            v-if="isAddScriptAvailable"
+          />
+        </v-col>
+      </v-row>
     </v-card-title>
     <v-card-text>
       <v-data-table
@@ -44,7 +80,7 @@
   import ScriptItem from "./ScriptItem";
   import {debug} from "../../utils/logging";
   import {Direction} from "../../data/dto/pagination_dto";
-  import {SourceScriptDtoFields} from "../../data/dto/script_dto";
+  import {SourceScriptDtoFields, SourceScriptFilter} from "../../data/dto/script_dto";
   import {fullDate} from "../../utils/date";
 
   export default {
@@ -57,7 +93,7 @@
       },
       baseProperties: {
         type: Array,
-        default: function () {
+        default() {
           return [
             SourceScriptDtoFields.uploadDate
           ]
@@ -65,7 +101,7 @@
       },
       baseDirections: {
         type: Array,
-        default: function () {
+        default() {
           return [
             Direction.DESCENDING
           ]
@@ -74,12 +110,16 @@
     },
     data() {
       return {
-        currentPage: 0,
+        availableScriptsNames: [],
         itemsPerPage: this.baseItemsPerPage,
         properties: this.baseProperties,
         directions: this.baseDirections,
         items: [],
+        selectedScriptId: null,
+        selectedScriptName: null,
+        selectedScriptTag: null,
         totalItems: 0,
+        totalPages: 1,
         loading: true,
         options: {},
         headers: [
@@ -94,34 +134,55 @@
     computed: {
       isAddScriptAvailable() {
         return this.$store.getters.isTeam;
+      },
+      isTeam() {
+        return this.$store.getters.isTeam;
       }
     },
     methods: {
       formatDate(date) {
         return fullDate(date);
       },
-      scriptsPage(page, itemsPerPage, properties, directions) {
-        this.allScriptsPage(page, itemsPerPage, properties, directions);
+      getSourceScripts() {
+        if (this.isTeam) {
+          scriptApi.getSessionScripts().then(response => {
+            const availableScripts = response.data;
+            debug("getSourceScripts", "availableScripts", availableScripts);
+            this.availableScriptsNames = [...new Set(availableScripts.map(script => script.name))];
+          })
+        }
       },
-      async allScriptsPage(page, itemsPerPage, properties, directions) {
+      async scriptsPage(page, itemsPerPage, properties, directions) {
         this.loading = true;
-        await scriptApi.getScripts(
+        await scriptApi.getFilteredScripts(
           page - 1,
           itemsPerPage,
           properties,
-          directions
+          directions,
+          new SourceScriptFilter(
+            this.selectedScriptId,
+            this.selectedScriptName,
+            this.selectedScriptTag
+          )
         ).then(response => {
           const sourceScriptPage = response.data;
           debug("getScripts", "sourceScriptPage:", sourceScriptPage);
 
           this.items = sourceScriptPage.items;
           this.totalItems = sourceScriptPage.totalItems;
-          this.currentPage = sourceScriptPage.currentPage + 1;
+          this.totalPages = sourceScriptPage.totalPages;
           this.loading = false;
         })
       },
+      refreshFirstPage() {
+        if (this.options.page === 1) {
+          this.refreshCurrentPage();
+        } else {
+          this.options.page = 1;
+        }
+      },
       refreshCurrentPage() {
-        this.scriptsPage(this.currentPage, this.itemsPerPage, this.properties, this.directions);
+        this.scriptsPage(this.options.page, this.itemsPerPage, this.properties, this.directions);
       },
       addScript() {
         this.refreshCurrentPage();
@@ -138,8 +199,15 @@
         this.itemsPerPage = itemsPerPageNormalized;
         this.properties = sortBy;
         this.directions = directions;
-        this.scriptsPage(page, itemsPerPageNormalized, sortBy, directions);
+        this.scriptsPage(page, itemsPerPageNormalized, sortBy, directions).then(() => {
+          if (page > this.totalPages) {
+            this.options.page = this.totalPages > 0 ? this.totalPages : 1;
+          }
+        });
       }
+    },
+    beforeMount() {
+      this.getSourceScripts();
     }
   }
 </script>

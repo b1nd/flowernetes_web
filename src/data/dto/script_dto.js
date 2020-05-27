@@ -19,6 +19,14 @@ export class SourceScriptDto {
   }
 }
 
+export class SourceScriptFilter {
+  constructor(id, name, tag) {
+    this.id = id;
+    this.name = name;
+    this.tag = tag;
+  }
+}
+
 export function isPyScript(fileName) {
   return fileName.toLowerCase().endsWith(".py")
 }

@@ -135,6 +135,7 @@
         endDate: null,
         selectedStatus: null,
         totalItems: 0,
+        totalPages: 1,
         loading: true,
         options: {},
         headers: [
@@ -165,9 +166,9 @@
       taskSelectionText(task) {
         return task && task.name ? `${task.workflow.name}/${task.name}` : "";
       },
-      workloadsPage(page, itemsPerPage, properties, directions) {
+      async workloadsPage(page, itemsPerPage, properties, directions) {
         this.loading = true;
-        workloadApi.getFilteredWorkloads(
+        await workloadApi.getFilteredWorkloads(
           page - 1,
           itemsPerPage,
           properties,
@@ -185,12 +186,16 @@
 
           this.items = workloadsPage.items;
           this.totalItems = workloadsPage.totalItems;
+          this.totalPages = workloadsPage.totalPages;
           this.loading = false;
         });
       },
       refreshPage() {
-        this.options.page = 1;
-        this.workloadsPage(this.options.page, this.itemsPerPage, this.properties, this.directions);
+        if (this.options.page === 1) {
+          this.workloadsPage(this.options.page, this.itemsPerPage, this.properties, this.directions);
+        } else {
+          this.options.page = 1;
+        }
       },
       statusColor(status) {
         return TaskStatusColor[status];
@@ -204,7 +209,11 @@
         this.itemsPerPage = itemsPerPageNormalized;
         this.properties = sortBy;
         this.directions = directions;
-        this.workloadsPage(page, itemsPerPageNormalized, sortBy, directions);
+        this.workloadsPage(page, itemsPerPageNormalized, sortBy, directions).then(() => {
+          if (page > this.totalPages) {
+            this.options.page = this.totalPages > 0 ? this.totalPages : 1;
+          }
+        });
       }
     }
   }

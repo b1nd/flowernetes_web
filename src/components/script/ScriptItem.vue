@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="dialog" max-width="800px">
     <template v-slot:activator="{ on }">
-      <v-list-item link v-on="on">
+      <v-list-item link v-on="on" class="pa-0">
         <v-list-item-content>
           {{editableScript.name}}
         </v-list-item-content>
