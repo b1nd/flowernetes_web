@@ -23,20 +23,33 @@
       </v-btn>
     </v-toolbar-items>
     <v-spacer/>
+    <span class="secondary--text">{{time}}</span>
   </v-app-bar>
 </template>
 
 <script>
+  import moment from "moment";
+
   export default {
     name: "AppBar",
     data: () => ({
+      time: "",
       toolbarItems: [
         {title: 'Workflows', link: '/workflows'},
         {title: 'Workloads', link: '/workloads'},
         {title: 'Scripts', link: '/scripts'},
         {title: 'Monitoring', link: '/monitoring'}
       ]
-    })
+    }),
+    methods: {
+      updateTime() {
+        this.time = moment().local(true).format("dddd, MMMM Do YYYY, h:mm:ss");
+      }
+    },
+    beforeMount() {
+      this.updateTime();
+      setInterval(this.updateTime, 1000);
+    }
   }
 </script>
 
