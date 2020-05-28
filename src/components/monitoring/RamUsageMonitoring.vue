@@ -43,6 +43,7 @@
   import workflowApi from "../../api/workflowApi";
   import {debug} from "../../utils/logging";
   import {localDate} from "../../utils/date";
+  import {formatBytes} from "../../utils/display";
 
   export default {
     name: "RamUsageMonitoring",
@@ -75,10 +76,10 @@
           .then(() => this.renderRamUsagePlot())
       },
       requestUsageToString(usage) {
-        return `${usage.task.name}: ${usage.request} bytes`;
+        return `${usage.task.name}: ${formatBytes(usage.request)}`;
       },
       limitUsageToString(usage) {
-        return `${usage.task.name}: ${usage.limit} bytes`;
+        return `${usage.task.name}: ${formatBytes(usage.limit)}`;
       },
       renderRamUsagePlot() {
         const data = [

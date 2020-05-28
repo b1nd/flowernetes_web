@@ -47,6 +47,7 @@
   import {ISO_DATE_FORMAT, localDate} from "../../utils/date";
   import MenuDatePicker from "../common/MenuDatePicker";
   import teamApi from "../../api/teamApi";
+  import {formatBytes} from "../../utils/display";
 
   export default {
     name: "TeamResourceUsage",
@@ -102,10 +103,10 @@
         return `${usage.workflow.name}: ${usage.limit} cores ${this.usageTasks(usage)}`;
       },
       requestRamUsageToString(usage) {
-        return `${usage.workflow.name}: ${usage.request} bytes ${this.usageTasks(usage)}`;
+        return `${usage.workflow.name}: ${formatBytes(usage.request)} ${this.usageTasks(usage)}`;
       },
       limitRamUsageToString(usage) {
-        return `${usage.workflow.name}: ${usage.limit} bytes ${this.usageTasks(usage)}`;
+        return `${usage.workflow.name}: ${formatBytes(usage.limit)} ${this.usageTasks(usage)}`;
       },
       renderCpuUsagePlot() {
         const data = [

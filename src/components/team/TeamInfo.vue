@@ -69,6 +69,7 @@
   import {areAllRequiredFieldsSpecified} from "../../utils/validation";
   import teamApi from "../../api/teamApi";
   import {UpdateTeamDto} from "../../data/dto/team_dto";
+  import {formatBytes} from "../../utils/display";
 
   export default {
     name: "TeamInfo",
@@ -99,8 +100,8 @@
           {key: "namespace", value: this.team.namespace.name},
           {key: "CPU quota", value: `${this.team.namespace.resourceQuota.cpuRequest} cores`},
           {key: "CPU limit", value: `${this.team.namespace.resourceQuota.cpuLimit} cores`},
-          {key: "RAM quota", value: `${this.team.namespace.resourceQuota.memoryRequest} bytes`},
-          {key: "RAM limit", value: `${this.team.namespace.resourceQuota.memoryLimit} bytes`}
+          {key: "RAM quota", value: formatBytes(this.team.namespace.resourceQuota.memoryRequest)},
+          {key: "RAM limit", value: formatBytes(this.team.namespace.resourceQuota.memoryLimit)}
         ]
       },
       areRequiredFieldsSpecified() {

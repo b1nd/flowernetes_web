@@ -207,6 +207,7 @@
   } from "../../data/dto/task_dto";
   import {isIpynbScript} from "../../data/dto/script_dto";
   import containerizationApi from "../../api/containerizationApi";
+  import {formatBytes} from "../../utils/display";
 
   export default {
     name: "TaskInfo",
@@ -324,8 +325,8 @@
           {key: "Retries limit", value: this.task.maxRetries},
           {key: "CPU request", value: `${this.task.cpuRequest} cores`},
           {key: "CPU limit", value: `${this.task.cpuLimit} cores`},
-          {key: "Memory request", value: `${this.task.memoryRequest} bytes`},
-          {key: "Memory limit", value: `${this.task.memoryLimit} bytes`},
+          {key: "Memory request", value: formatBytes(this.task.memoryRequest)},
+          {key: "Memory limit", value: formatBytes(this.task.memoryLimit)},
           {key: "Cron condition", value: this.taskCronConditionText},
           {key: "Strict conditions", value: this.strictConditionsText},
           {key: "Alternative conditions", value: this.alternativeConditionsText},

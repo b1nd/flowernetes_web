@@ -82,6 +82,7 @@
   import {saveAs} from "file-saver";
   import {getFileNameFromHeader} from "../../api/api";
   import {TaskStatus} from "../../data/dto/task_dto";
+  import {formatBytes} from "../../utils/display";
 
   export default {
     name: "WorkloadInfo",
@@ -117,8 +118,8 @@
           {key: "Running base image", value: this.workload.baseImage},
           {key: "CPU request", value: `${this.workload.cpuRequest} cores`},
           {key: "CPU limit", value: `${this.workload.cpuLimit} cores`},
-          {key: "Memory request", value: `${this.workload.memoryRequest} bytes`},
-          {key: "Memory limit", value: `${this.workload.memoryLimit} bytes`}
+          {key: "Memory request", value: formatBytes(this.workload.memoryRequest)},
+          {key: "Memory limit", value: formatBytes(this.workload.memoryLimit)}
         ]
       },
       isDownloadLogAvailable() {
