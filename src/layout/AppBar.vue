@@ -43,7 +43,7 @@
     }),
     methods: {
       updateTime() {
-        this.time = moment().local(true).format("dddd, MMMM Do YYYY, h:mm:ss");
+        this.time = moment().local(true).format("dddd, MMMM Do YYYY, H:mm:ss");
       }
     },
     beforeMount() {

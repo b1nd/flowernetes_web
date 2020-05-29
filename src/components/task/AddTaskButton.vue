@@ -40,7 +40,7 @@
           <v-col cols="12" sm="6">
             <v-text-field
               v-model="timeDeadline"
-              label="Time deadline"
+              label="Time deadline (seconds)"
               flat
             />
           </v-col>

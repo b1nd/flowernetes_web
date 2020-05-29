@@ -83,6 +83,7 @@
   import {getFileNameFromHeader} from "../../api/api";
   import {TaskStatus} from "../../data/dto/task_dto";
   import {formatBytes} from "../../utils/display";
+  import {fullDate} from "../../utils/date";
 
   export default {
     name: "WorkloadInfo",
@@ -111,10 +112,10 @@
       infoItems() {
         return [
           {key: "Workload Id", value: this.workload.id},
-          {key: "Trigger time", value: this.workload.workloadCreationTime},
+          {key: "Trigger time", value: fullDate(this.workload.workloadCreationTime)},
           {key: "Workload status", value: this.workload.taskStatus, color: TaskStatusColor[this.workload.taskStatus]},
-          {key: "Task start time", value: this.workload.taskStartTime},
-          {key: "Task completion time", value: this.workload.taskCompletionTime},
+          {key: "Task start time", value: fullDate(this.workload.taskStartTime)},
+          {key: "Task completion time", value: fullDate(this.workload.taskCompletionTime)},
           {key: "Running base image", value: this.workload.baseImage},
           {key: "CPU request", value: `${this.workload.cpuRequest} cores`},
           {key: "CPU limit", value: `${this.workload.cpuLimit} cores`},
