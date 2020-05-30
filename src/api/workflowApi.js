@@ -5,6 +5,8 @@ const workflowsMapping = "/workflows";
 export default {
   getWorkflows: () => api.get(workflowsMapping),
   addWorkflow: workflowDto => api.put(workflowsMapping, workflowDto),
+  updateWorkflow: (workflowId, workflowDto) => api.patch(`${workflowsMapping}/${workflowId}`, workflowDto),
+  deleteWorkflow: workflowId => api.delete(`${workflowsMapping}/${workflowId}`),
   getWorkflowTasks: workflowId => api.get(`${workflowsMapping}/${workflowId}/tasks`),
   getWorkflowTasksStatusInfo: workflowId => api.get(`${workflowsMapping}/${workflowId}/tasks/status`),
   getWorkflowGraph: workflowId => api.get(`${workflowsMapping}/${workflowId}/graph`),

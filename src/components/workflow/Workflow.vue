@@ -1,6 +1,6 @@
 <template>
   <v-row no-gutters justify="center">
-    <v-col cols="12" sm="3">
+    <v-col cols="12" md="4" sm="5">
       <WorkflowList
         @input="onWorkflowSelected"
       />
