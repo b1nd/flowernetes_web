@@ -249,7 +249,7 @@
     },
     computed: {
       isEditTaskAvailable() {
-        return this.$store.getters.isTeam;
+        return this.$store.getters.isTeam && this.$store.getters.sessionTeam.id === this.task.workflow.team.id;
       },
       availableTasks() {
         return this.$store.getters.availableTasks;
